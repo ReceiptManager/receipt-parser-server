@@ -1,2 +1,8 @@
+# Certificates
 key.pem
 cert.pem
+
+# Data directory
+data/img/*
+data/tmp/*
+data/txt/*

@@ -1,0 +1,51 @@
+receipts_path: "data/txt"
+
+markets:
+  Colruyt:
+     - colruyt
+     - Colruyt
+  Delhaize:
+     - Delhaize
+     - delhaize
+  Penny:
+     - penny
+     - p e n n y
+     - m a r k t gmbh
+  REWE:
+     - rewe
+  Real:
+     - real
+  Netto:
+     - netto-online
+  Aldi:
+     - aldi
+     - friedrichstr 128—133
+  Lidl:
+     - lidl
+  Edeka:
+    - edeka
+  Drogerie:
+     - drogerie
+  Kodi:
+     - kodi
+  Getraenke:
+    - Getraenke Tempel
+  Tanken:
+     - shell
+     - esso station
+     - aral
+     - total tankstelle
+     - RK Tankstellen
+
+sum_keys:
+  - summe
+  - gesamtbetrag
+  - gesamt
+  - total
+  - sum
+  - zwischensumme
+  - bar
+  - te betalen
+
+sum_format: '\d+(\.\s?|,\s?|[^a-zA-Z\d])\d{2}'
+date_format: '.*?(?P<date>(\d{2,4}(\.\s?|[^a-zA-Z\d])\d{2}(\.\s?|[^a-zA-Z\d])(19|20)?\d\d)\s+'
