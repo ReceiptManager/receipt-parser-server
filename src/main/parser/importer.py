@@ -17,11 +17,26 @@
 
 
 import os
+import shutil
+
 from PIL import Image
-BASE_PATH = os.getcwd()
-INPUT_FOLDER = os.path.join(BASE_PATH, "data/img")
-TMP_FOLDER = os.path.join(BASE_PATH, "data/tmp")
-OUTPUT_FOLDER = os.path.join(BASE_PATH, "data/txt")
+
+
+def get_work_dir():
+    dir = os.getcwd()
+
+    if "server" in dir:
+        dir = dir.replace("src/main/server", "")
+
+    if not dir.endswith("/"):
+        dir = dir + "/"
+
+    return dir
+
+
+INPUT_FOLDER = os.path.join(get_work_dir(), "data/img")
+TMP_FOLDER = os.path.join(get_work_dir(), "data/tmp")
+OUTPUT_FOLDER = os.path.join(get_work_dir(), "data/txt")
 
 
 def prepare_folders():
@@ -35,6 +50,17 @@ def prepare_folders():
     ]:
         if not os.path.exists(folder):
             os.makedirs(folder)
+
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 
 def find_images(folder):
@@ -69,7 +95,7 @@ def rotate_image(input_file, output_file, angle=90):
 
     cmd = "convert -rotate " + "' " + str(angle) + "' "
     cmd += "'" + input_file + "' '" + output_file + "'"
-    print("Running", cmd)
+    # print("Running", cmd)
     os.system(cmd)  # sharpen
 
 
@@ -86,7 +112,7 @@ def sharpen_image(input_file, output_file):
     rotate_image(input_file, output_file)  # rotate
     cmd = "convert -auto-level -sharpen 0x4.0 -contrast "
     cmd += "'" + output_file + "' '" + output_file + "'"
-    print("Running", cmd)
+    #print("Running", cmd)
     os.system(cmd)  # sharpen
 
 
@@ -102,15 +128,15 @@ def run_tesseract(input_file, output_file):
 
     cmd = "tesseract -l deu "
     cmd += "'" + input_file + "' '" + output_file + "'"
-    print("Running", cmd)
+    #print("Running", cmd)
     os.system(cmd)
 
 
 def main():
     prepare_folders()
     images = list(find_images(INPUT_FOLDER))
-    print("Found the following images in", INPUT_FOLDER)
-    print(images)
+    #print("Found the following images in", INPUT_FOLDER)
+    #print(images)
 
     for image in images:
         input_path = os.path.join(

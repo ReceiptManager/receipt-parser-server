@@ -1,6 +1,9 @@
 # Certificates
-key.pem
-cert.pem
+*.pem
+*.csr
+*.key
+*.srl
+*.crt
 
 # Data directory
 data/img/*

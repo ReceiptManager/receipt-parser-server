@@ -1,26 +1,8 @@
-
-# !/usr/bin/python3
-# coding: utf-8
-
-# Copyright 2015-2020
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-import dateutil.parser
 import re
 from difflib import get_close_matches
 
-from parser.objectview import ObjectView
+import dateutil.parser
+
 
 class Receipt(object):
     """ Market receipt to be parsed """
@@ -88,8 +70,7 @@ class Receipt(object):
 
         for line in self.lines:
             m = re.match(self.config.date_format, line)
-            if m:  # We"re happy with the first match for now
-                # validate date using the dateutil library (https://dateutil.readthedocs.io/)
+            if m:
                 date_str = m.group(1)
                 dateutil.parser.parse(date_str)
 

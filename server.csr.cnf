@@ -1,0 +1,14 @@
+[req]
+default_bits = 4096
+prompt = no
+default_md = sha512
+distinguished_name = dn
+
+[dn]
+C=DE
+ST=Saxony
+L=Leipzig
+O=ReceiptParser
+OU=ReceiptParser development team
+emailAddress=development@receiptparser.com
+CN = cyber.local

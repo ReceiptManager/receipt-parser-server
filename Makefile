@@ -1,5 +1,5 @@
 convert:
-	python src/main/parser/*.py
+	python src/main/server/parser/*.py
 
 clean:
 	rm -r data/img/*

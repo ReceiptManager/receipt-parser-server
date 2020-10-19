@@ -1,37 +1,22 @@
 # coding: utf-8
 
-# Copyright 2015-2020
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-
 import os
 import time
 from collections import defaultdict
 
 import yaml
 
-from parser.objectview import ObjectView
-from parser.receipt import Receipt
+from src.main.parser.objectview import ObjectView
+from src.main.parser.receipt import Receipt
 
 BASE_PATH = os.getcwd()
 STATS_OUTPUT_FORMAT = "{0:10.0f},{1:d},{2:d},{3:d},{4:d},\n"
 VERBOSE_OUTPUT_FORMAT = "Text, Market, Date, Sum"
 
 
-def read_config(config="config.yml"):
+def read_config(config):
     """
-    :param file: str
+    :param config: str
         Name of file to read
     :return: ObjectView
         Parsed config file
@@ -54,11 +39,11 @@ def get_files_in_folder(folder, include_hidden=False):
         List of full path of files in folder
     """
 
-    files = os.listdir(os.path.join(BASE_PATH,folder))  # list content of folder
+    files = os.listdir(os.path.join(BASE_PATH, folder))  # list content of folder
     if not include_hidden:  # avoid files starting with "."
         files = [
             f for f in files if not f.startswith(".")
-        ]  #
+        ]
 
     files = [
         os.path.join(folder, f) for f in files
@@ -120,9 +105,9 @@ def ocr_receipts(config, receipt_files):
     stats = defaultdict(int)
     print(VERBOSE_OUTPUT_FORMAT)
     for receipt_path in receipt_files:
-        with open(receipt_path) as receipt:
+        with open(receipt_path, encoding=" ISO-8859-1", errors='ignore') as receipt:
             receipt = Receipt(config, receipt.readlines())
-            print(receipt_path, receipt.market, receipt.date, receipt.sum)
+            # print(receipt_path, receipt.market, receipt.date, receipt.sum)
 
             stats["total"] += 1
             if receipt.market:
@@ -131,5 +116,5 @@ def ocr_receipts(config, receipt_files):
                 stats["date"] += 1
             if receipt.sum:
                 stats["sum"] += 1
-    return stats
 
+    return stats
