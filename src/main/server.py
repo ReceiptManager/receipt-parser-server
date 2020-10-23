@@ -100,10 +100,9 @@ def upload_image():
         print("Date:       ", save_ret(receipt.date))
         print("Amount:     ", save_ret(receipt.sum))
 
-        #  "receiptDate": dumps(receipt.date, default=json_serial),
         date = {"storeName": receipt.company,
                 "receiptTotal": receipt.sum,
-                "receiptDate": "2020-10-16",
+                "receiptDate": dumps(receipt.date, default=json_serial),
                 "receiptCategory": "grocery"}
 
         response = app.response_class(
