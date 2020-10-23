@@ -24,7 +24,6 @@ app.secret_key = "test"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 * 1024  # 16 MB
 
-
 # -------------------------------------------------------------------------------------------------
 # HELPER METHODS
 def allowed_file(filename):
@@ -43,7 +42,7 @@ def error(skk): print("\033[91m{}\033[00m".format(skk))
 def get_work_dir():
     dir = os.getcwd()
 
-    if "server" in dir:
+    if "main" in dir:
         dir = dir.replace("src/main/", "")
 
     if not dir.endswith("/"):
@@ -90,9 +89,15 @@ def upload_image():
         info("Store file at: " + output)
         file.save(output)
 
+        for file in os.listdir(get_work_dir() + "data/txt"):
+            if file.endswith('.txt'):
+                os.remove(file)
+
         info("Image successfully uploaded and displayed")
         config = read_config(get_work_dir() + "/config.yml")
-        receipt = process_receipt(config, get_work_dir() + "data/img/image.png", out_dir=None, verbosity=0)
+
+        #os.mknod(out_dir=get_work_dir() + "data/txt/image.png.txt")
+        receipt = process_receipt(config, get_work_dir() + "data/img/image.png", out_dir=get_work_dir() + "data/txt/", verbosity=10)
 
         print("Filename:   ", save_ret(receipt.filename))
         print("Company:    ", save_ret(receipt.company))

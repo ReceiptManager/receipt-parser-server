@@ -67,6 +67,7 @@ sum_keys:
   - zwischensumme
   - bar
   - te betalen
+  - zu zahlen
 
 formats:
   sum: '\d+(\.\s?|,\s?|[^a-zA-Z\d])\d{2}'
