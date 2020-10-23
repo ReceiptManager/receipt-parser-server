@@ -3,22 +3,22 @@
 import json
 import os
 import socket
+from datetime import datetime, date
+from json import dumps
 
 from flask import Flask, flash, request, redirect
-from werkzeug.utils import secure_filename
+from receiptparser.config import read_config
+from receiptparser.parser import process_receipt
 
 # -------------------------------------------------------------------------------------------------
 # SERVER SETTINGS
-from src.main.parser.importer import prepare_folders, find_images, INPUT_FOLDER, sharpen_image, run_tesseract, \
-    OUTPUT_FOLDER, TMP_FOLDER
-from src.main.parser.parse import read_config, get_files_in_folder, ocr_receipts
 
 ALLOWED_PORT = 8721
 ALLOWED_HOST = socket.gethostbyname(socket.gethostname())
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 UPLOAD_FOLDER = 'data/img'
-CERT_LOCATION = "client.crt"
-KEY_LOCATION = "client.key"
+CERT_LOCATION = "cert/server.crt"
+KEY_LOCATION = "cert/server.key"
 app = Flask(__name__)
 app.secret_key = "test"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -44,12 +44,27 @@ def get_work_dir():
     dir = os.getcwd()
 
     if "server" in dir:
-        dir = dir.replace("src/main/server", "")
+        dir = dir.replace("src/main/", "")
 
     if not dir.endswith("/"):
         dir = dir + "/"
 
     return dir
+
+
+def save_ret(com):
+    if (not com):
+        return ""
+
+    return com
+
+
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+
+    if isinstance(obj, (datetime, date)):
+        return obj.isoformat()
+    raise TypeError("Type %s not serializable" % type(obj))
 
 
 # -------------------------------------------------------------------------------------------------
@@ -69,47 +84,34 @@ def upload_image():
 
     if file and allowed_file(file.filename):
         info('Uploaded file: ' + file.filename)
-        prepare_folders()
 
-        filename = secure_filename(file.filename)
-        output = os.path.join(get_work_dir() + app.config["UPLOAD_FOLDER"], filename)
+        # filename = secure_filename(file.filename)
+        output = os.path.join(get_work_dir() + app.config["UPLOAD_FOLDER"], "image.png")
         info("Store file at: " + output)
         file.save(output)
 
         info("Image successfully uploaded and displayed")
-        images = list(find_images(INPUT_FOLDER))
-        for image in images:
-            input_path = os.path.join(
-                INPUT_FOLDER,
-                image
-            )
-            tmp_path = os.path.join(
-                TMP_FOLDER,
-                image
-            )
-            out_path = os.path.join(
-                OUTPUT_FOLDER,
-                image + ".out"
-            )
+        config = read_config(get_work_dir() + "/config.yml")
+        receipt = process_receipt(config, get_work_dir() + "data/img/image.png", out_dir=None, verbosity=0)
 
-            sharpen_image(input_path, tmp_path)
-            run_tesseract(tmp_path, out_path)
+        print("Filename:   ", save_ret(receipt.filename))
+        print("Company:    ", save_ret(receipt.company))
+        print("Postal code:", save_ret(receipt.postal))
+        print("Date:       ", save_ret(receipt.date))
+        print("Amount:     ", save_ret(receipt.sum))
 
-            config = read_config(get_work_dir() + "/config.yml")
-            receipt_files = get_files_in_folder(get_work_dir() + "data/img")
-            ocr_receipts(config, receipt_files)
-s
-            date = {"storeName": "",
-                    "receiptTotal": "",
-                    "receiptDate": "",
-                    "receiptCategory": ""}
+        #  "receiptDate": dumps(receipt.date, default=json_serial),
+        date = {"storeName": receipt.company,
+                "receiptTotal": receipt.sum,
+                "receiptDate": "2020-10-16",
+                "receiptCategory": "grocery"}
 
-            response = app.response_class(
-                response=json.dumps(date),
-                mimetype='application/json'
-            )
+        response = app.response_class(
+            response=json.dumps(date),
+            mimetype='application/json'
+        )
 
-            return response
+        return response
 
     else:
         error("Invalid image or filetype")

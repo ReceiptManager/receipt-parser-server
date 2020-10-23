@@ -6,9 +6,9 @@
 *.crt
 
 # Data directory
-data/img/*
-data/tmp/*
-data/txt/*
+data/img/*.png
+data/tmp/*.png
+data/txt/*.txt
 
 ### PyCharm ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider

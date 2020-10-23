@@ -1,56 +1,77 @@
-receipts_path: "data/txt"
+language: deu
 
-markets:
-  Penny:
-    - penny
-
-  REWE:
-    - REWE
-
-  Real:
-    - real
-
-  Netto:
-    - netto-online
-    - Marken-Discount
-    - Marken-Discount
-    - Netto
-    - netto
-
-  Kaiser's:
-    - kaiser
-    - kaiserswerther straße 270
-
+companys:
   Aldi:
     - aldi
-    - friedrichstr 128—133
-
-  Lidl:
-    - lidl
-
-  Edeka:
-    - edeka
-
-  Drogerie:
+  Bauhaus:
+    - bauhaus
+  Colruyt:
+    - colruyt
+  Delhaize:
+    - delhaize
+  Deutsche Post:
+    - deutsche post
+  Drogerie Markt:
     - drogerie
 
+  Edeka:
+   - edeka
+  Getraenke:
+    - Getraenke Tempel
+  Kaiser's:
+    - kaiser
+  Kaufland:
+    - kaufland
+    - kauf land
+  Kodi:
+    - kodi
+  Lidl:
+    - lidl
+  Marktkauf:
+    - marktkauf
+  Migros:
+    - genossenschaft migros
+  Netto Marken-Discount:
+    - netto-online
+    - Marken-Discount
+    - Marken
+    - Netto
+    - netto
+  Penny:
+    - penny
+    - p e n n y
+    - m a r k t gmbh
+  REWE:
+    - rewe
+  Real:
+    - real
+  SuperBioMarkt:
+    - SuperBioMarkt
   Tanken:
     - shell
-    - esso station
+    - esso
     - aral
-    - total tankstelle
-    - RK Tankstellen
+    - avia
+    - tankstelle
+    - zapfpunkt
+    - zapfstelle
+    - zapfsäule
 
+# Sum keys roughly ordered by likelyhood.
 sum_keys:
   - summe
-  - SUMME
-  - Sume
   - gesamtbetrag
   - gesamt
   - total
   - sum
-  - SUMHE
+  - zwischensumme
   - bar
+  - te betalen
 
-sum_format: '\d+(\.\s?|,\s?|[^a-zA-Z\d])\d{2}'
-date_format: '(?P<date>(\d{2,4}(\.\s?|[^a-zA-Z\d])\d{2}(\.\s?|[^a-zA-Z\d])(19|20)?\d\d)\s+)'
+formats:
+  sum: '\d+(\.\s?|,\s?|[^a-zA-Z\d])\d{2}'
+
+  # Matches dates like 19.08.15 and 19. 08. 2015
+  date: '\b([0123]?\d\s?\.\s?[01]?\d\s?\.\s?(?:20)?\d\d)\b'
+
+  postal_code: '\b(\d{5})\s+[a-z]'
