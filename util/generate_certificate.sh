@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# Generate a root certificate
-# Each other certificate is signed using this root certificate
-
 NUMBER_OF_DAYS=100
 ROOT_CERTIFICATE_KEY="cert/rootCA.key"
 ROOT_CERTIFICATE_NAME="cert/rootCA.pem"
@@ -21,14 +18,14 @@ generate_root_ca() {
     -$HASH_ALGORITHM \
     -days $NUMBER_OF_DAYS \
     -out $ROOT_CERTIFICATE_NAME \
-    -config server.csr.cnf
+    -config cert/server.csr.cnf
 }
 
 create_server_certificate() {
   openssl req \
     -new -$HASH_ALGORITHM \
     -nodes \
-    -out server.csr \
+    -out cert/server.csr \
     -newkey rsa:$LENGTH_OF_CERTIFICATE \
     -keyout cert/server.key \
     -config cert/server.csr.cnf
@@ -40,7 +37,7 @@ create_server_certificate() {
     -CAcreateserial -out cert/server.crt \
     -days $NUMBER_OF_DAYS \
     -$HASH_ALGORITHM \
-    -extfile v3.ext
+    -extfile cert/v3.ext
 }
 
 main() {
