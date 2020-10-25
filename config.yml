@@ -65,9 +65,9 @@ sum_keys:
   - total
   - sum
   - zwischensumme
-  - bar
   - te betalen
   - zu zahlen
+  - SUHRE
 
 formats:
   sum: '\d+(\.\s?|,\s?|[^a-zA-Z\d])\d{2}'
