@@ -10,7 +10,8 @@ HASH_ALGORITHM=sha512
 generate_root_ca() {
   openssl genrsa \
     -des3 \
-    -out $ROOT_CERTIFICATE_KEY $LENGTH_OF_CERTIFICATE
+    -out $ROOT_CERTIFICATE_KEY $LENGTH_OF_CERTIFICATE \
+    -passin file:.private_key 
 
   openssl req -$CERTIFICATE_TYPE \
     -new \
@@ -18,6 +19,7 @@ generate_root_ca() {
     -$HASH_ALGORITHM \
     -days $NUMBER_OF_DAYS \
     -out $ROOT_CERTIFICATE_NAME \
+    -passin file:.private_key\
     -config cert/server.csr.cnf
 }
 
@@ -26,6 +28,7 @@ create_server_certificate() {
     -new -$HASH_ALGORITHM \
     -nodes \
     -out cert/server.csr \
+    -passin file:.private_key \
     -newkey rsa:$LENGTH_OF_CERTIFICATE \
     -keyout cert/server.key \
     -config cert/server.csr.cnf
@@ -37,6 +40,7 @@ create_server_certificate() {
     -CAcreateserial -out cert/server.crt \
     -days $NUMBER_OF_DAYS \
     -$HASH_ALGORITHM \
+    -passin file:.private_key\
     -extfile cert/v3.ext
 }
 

@@ -4,7 +4,7 @@
 *.key
 *.srl
 *.crt
-
+.private_key
 # Data directory
 data/img/*.png
 data/tmp/*.png
