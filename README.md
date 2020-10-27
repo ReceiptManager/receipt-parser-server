@@ -86,6 +86,10 @@ make serve
 If you do all steps correctly. The server is running at `https://[YOUR-IP]:8721`. Now, you can change the
 server ip in the application, see [here](https://github.com/ReceiptManager/Application).
 
+<p align="center">
+  <img src="https://i.imgur.com/xcwvmYa.png">
+</p>
+
 ### Build using docker
 The docker image is currently tested. There might be some bugs present at the moment. However, the installation is much simpler.
 First, check if docker is running
@@ -118,7 +122,13 @@ If it is successfull. You can run the docker image
 docker run -p 8721:8721 monolidth/receipt-parser-server
 ```
 
-The image might be on docker hub in the future, thus at the moment it is required to build the image manual.
+<p align="center">
+  <img src="https://i.imgur.com/xcwvmYa.png">
+</p>
+
+
+If you do all steps correctly. The server is running at `https://[YOUR-IP]:8721`.
+There might be an image on docker hub in the future, thus at the moment it is required to build the image manual.
 
 ### Questions
 If there any questions, bug or enhancements, please raise an issue or read my medium article about this. You can
