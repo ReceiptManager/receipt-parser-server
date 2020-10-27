@@ -16,13 +16,14 @@ from receiptparser.parser import process_receipt
 from werkzeug.utils import secure_filename
 
 ALLOWED_PORT = 8721
-ALLOWED_HOST = socket.gethostbyname(socket.gethostname())
+ALLOWED_HOST = "0.0.0.0"
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 UPLOAD_FOLDER = 'data/img'
 CERT_LOCATION = "cert/server.crt"
 KEY_LOCATION = "cert/server.key"
 DATA_PREFIX = "data/img/"
 app = Flask(__name__)
+app.debug = True
 app.secret_key = "test"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 * 1024  # 16 MB
