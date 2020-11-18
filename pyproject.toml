@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "ReceiptManagerServer"
+version = "0.1.0"
+description = "Receipt manager server to interact with the flutter client and the receipt parser library."
+authors = ["William Todt <william.todt@mailbox.org>"]
+license = "Apache-2.0"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+wand = "^0.6.3"
+pytesseract = "^0.3.6"
+munch = "^2.5.0"
+opencv-python = "^4.4.0"
+python-dateutil = "^2.8.1"
+pillow = "^8.0.1"
+werkzeug = "^1.0.1"
+flask = "^1.1.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
