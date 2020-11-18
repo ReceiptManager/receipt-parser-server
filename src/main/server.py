@@ -1,5 +1,3 @@
-# -------------------------------------------------------------------------------------------------
-# IMPORTS
 import json
 import os
 import socket
@@ -11,8 +9,6 @@ import numpy as np
 from flask import Flask, flash, request, redirect
 from receiptparser.config import read_config
 from receiptparser.parser import process_receipt
-# -------------------------------------------------------------------------------------------------
-# SERVER SETTINGS
 from werkzeug.utils import secure_filename
 
 ALLOWED_PORT = 8721
@@ -29,37 +25,27 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 * 1024  # 16 MB
 
 
-# -------------------------------------------------------------------------------------------------
-# HELPER METHODS
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# PRINT INFO
 def info(skk): print("\033[95m{}\033[00m".format(skk))
 
 
-# PRINT ERROR
 def error(skk): print("\033[91m{}\033[00m".format(skk))
 
 
-# GET WORK DIR
 def get_work_dir():
     dir = os.getcwd()
 
-    if "main" in dir:
-        dir = dir.replace("src/main/", "")
-
-    if not dir.endswith("/"):
-        dir = dir + "/"
+    if "main" in dir: dir = dir.replace("src/main/", "")
+    if not dir.endswith("/"): dir = dir + "/"
 
     return dir
 
 
 def save_ret(component):
-    if not component:
-        return ""
-
+    if not component: return ""
     return component
 
 
@@ -69,9 +55,6 @@ def json_serial(obj):
 
     raise TypeError("Type %s not serializable" % type(obj))
 
-
-# -------------------------------------------------------------------------------------------------
-# UPLOAD API
 @app.route("/api/upload/", methods=["POST"])
 def upload_image():
     if "image" not in request.files:
@@ -93,37 +76,6 @@ def upload_image():
         info("Store file at: " + output)
         file.save(output)
 
-        info("Image successfully uploaded and displayed")
-
-        print("\t[TASK]: Rescale image")
-        img = cv2.imread(get_work_dir() + DATA_PREFIX + filename)
-
-        print("\t[TASK]: Grayscale image")
-        img = cv2.resize(img, None, fx=1.2, fy=1.2, interpolation=cv2.INTER_CUBIC)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-        print("\t[TASK]: Removing image noise")
-        kernel = np.ones((1, 1), np.uint8)
-        img = cv2.dilate(img, kernel, iterations=1)
-        img = cv2.erode(img, kernel, iterations=1)
-
-        print("\t[TASK]: Applying blur to the image")
-        img = cv2.threshold(cv2.GaussianBlur(img, (5, 5), 0), 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-        img = cv2.threshold(cv2.bilateralFilter(img, 5, 75, 75), 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-        img = cv2.threshold(cv2.medianBlur(img, 3), 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-        img = cv2.adaptiveThreshold(cv2.GaussianBlur(img, (5, 5), 0), 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                    cv2.THRESH_BINARY,
-                                    31, 2)
-        img = cv2.adaptiveThreshold(cv2.bilateralFilter(img, 9, 75, 75), 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                    cv2.THRESH_BINARY, 31, 2)
-        img = cv2.adaptiveThreshold(cv2.medianBlur(img, 3), 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 31,
-                                    2)
-
-        status = cv2.imwrite(get_work_dir() + DATA_PREFIX + filename, img)
-
-        if status is True:
-            info("Image written to file-system")
-
         info("Parsing image")
         config = read_config(get_work_dir() + "/config.yml")
         receipt = process_receipt(config, get_work_dir() + DATA_PREFIX + filename, out_dir=get_work_dir() + "data/txt/",
@@ -134,8 +86,6 @@ def upload_image():
         print("Postal code:", save_ret(receipt.postal))
         print("Date:       ", save_ret(receipt.date))
         print("Amount:     ", save_ret(receipt.sum))
-
-
 
         date = {"storeName": receipt.company,
                 "receiptTotal": receipt.sum,
