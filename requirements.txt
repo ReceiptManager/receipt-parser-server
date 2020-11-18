@@ -1,4 +1,4 @@
-requests==2.24.0
+requests==2.25.0
 Flask==1.1.1
 Werkzeug==0.16.0
 Pillow==8.0.1
