@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ReceiptManagerServer"
+name = "receipt_manager_server"
 version = "0.1.0"
 description = "Receipt manager server to interact with the flutter client and the receipt parser library."
 authors = ["William Todt <william.todt@mailbox.org>"]
@@ -15,8 +15,14 @@ python-dateutil = "^2.8.1"
 pillow = "^8.0.1"
 werkzeug = "^1.0.1"
 flask = "^1.1.2"
+receiptparser = "^1.1"
+pyyaml = "^5.3.1"
 
 [tool.poetry.dev-dependencies]
+
+
+[tool.poetry.scripts]
+run = 'receipt_manager_server:main'
 
 [build-system]
 requires = ["poetry>=0.12"]

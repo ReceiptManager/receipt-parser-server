@@ -1,11 +1,8 @@
 import json
 import os
-import socket
 from datetime import datetime, date
 from json import dumps
 
-import cv2
-import numpy as np
 from flask import Flask, flash, request, redirect
 from receiptparser.config import read_config
 from receiptparser.parser import process_receipt
@@ -20,9 +17,11 @@ KEY_LOCATION = "cert/server.key"
 DATA_PREFIX = "data/img/"
 app = Flask(__name__)
 app.debug = True
-app.secret_key = "test"
+app.secret_key = "ignore_me"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 * 1024  # 16 MB
+
+# 16 MB
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 * 1024
 
 
 def allowed_file(filename):
@@ -54,6 +53,7 @@ def json_serial(obj):
         return obj.isoformat()
 
     raise TypeError("Type %s not serializable" % type(obj))
+
 
 @app.route("/api/upload/", methods=["POST"])
 def upload_image():
@@ -105,12 +105,17 @@ def upload_image():
         return redirect(request.url)
 
 
-# -------------------------------------------------------------------------------------------------
-# MAIN
-if __name__ == "__main__":
-    info("Start in workdir + " + get_work_dir())
-    info("Start flusk server with TLS support")
-    info("Cert file: " + get_work_dir() + CERT_LOCATION)
-    info("Key file: " + get_work_dir() + KEY_LOCATION)
+def start(running=None):
 
-    app.run(ALLOWED_HOST, ALLOWED_PORT, ssl_context=(get_work_dir() + CERT_LOCATION, get_work_dir() + KEY_LOCATION))
+    if running == 0:
+        info("Start in workdir + " + get_work_dir())
+        info("Start flusk server with TLS support")
+        info("Cert file: " + get_work_dir() + CERT_LOCATION)
+        info("Key file: " + get_work_dir() + KEY_LOCATION)
+
+        app.run(ALLOWED_HOST, ALLOWED_PORT, ssl_context=(get_work_dir() + CERT_LOCATION, get_work_dir() + KEY_LOCATION))
+        running = 1
+
+
+if __name__ == '__main__':
+    start(running=0)
