@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "receipt_manager_server"
-version = "0.1.0"
+version = "0.1.1"
 description = "Receipt manager server to interact with the flutter client and the receipt parser library."
 authors = ["William Todt <william.todt@mailbox.org>"]
 license = "Apache-2.0"
