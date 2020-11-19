@@ -78,8 +78,7 @@ def upload_image():
 
         info("Parsing image")
         config = read_config(get_work_dir() + "/config.yml")
-        receipt = process_receipt(config, input_path=get_work_dir() + DATA_PREFIX + filename,
-                                  output_path=get_work_dir() + "data/txt/")
+        receipt = process_receipt(config, filename)
 
         print("Filename:   ", save_ret(file.filename))
         print("Company:    ", save_ret(receipt.market))
@@ -112,3 +111,6 @@ def start():
 
     app.run(ALLOWED_HOST, ALLOWED_PORT, ssl_context=(get_work_dir() + CERT_LOCATION, get_work_dir() + KEY_LOCATION))
 
+
+if __name__ == '__main__':
+    start()
