@@ -26,7 +26,7 @@ install:
 	poetry install
 
 .PHONY: run
-install:
+run:
 	poetry run
 
 .PHONY: publish
