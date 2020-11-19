@@ -8,4 +8,4 @@ wand==0.6.3
 pytesseract==0.3.6
 munch==2.5.0
 opencv-python
-receipt_parser
+receipt_parser==0.1.3
