@@ -4,8 +4,8 @@ from datetime import datetime, date
 from json import dumps
 
 from flask import Flask, flash, request, redirect
-from receiptparser.config import read_config
-from receiptparser.parser import process_receipt
+from receipt_parser.config import read_config
+from receipt_parser.enhancer import process_receipt
 from werkzeug.utils import secure_filename
 
 ALLOWED_PORT = 8721
@@ -78,22 +78,21 @@ def upload_image():
 
         info("Parsing image")
         config = read_config(get_work_dir() + "/config.yml")
-        receipt = process_receipt(config, get_work_dir() + DATA_PREFIX + filename, out_dir=get_work_dir() + "data/txt/",
-                                  verbosity=10)
+        receipt = process_receipt(config, input_path=get_work_dir() + DATA_PREFIX + filename,
+                                  output_path=get_work_dir() + "data/txt/")
 
-        print("Filename:   ", save_ret(receipt.filename))
-        print("Company:    ", save_ret(receipt.company))
-        print("Postal code:", save_ret(receipt.postal))
+        print("Filename:   ", save_ret(file.filename))
+        print("Company:    ", save_ret(receipt.market))
         print("Date:       ", save_ret(receipt.date))
         print("Amount:     ", save_ret(receipt.sum))
 
-        date = {"storeName": receipt.company,
-                "receiptTotal": receipt.sum,
-                "receiptDate": dumps(receipt.date, default=json_serial),
-                "receiptCategory": "grocery"}
+        receipt_data = {"storeName": receipt.company,
+                        "receiptTotal": receipt.sum,
+                        "receiptDate": dumps(receipt.date, default=json_serial),
+                        "receiptCategory": "grocery"}
 
         response = app.response_class(
-            response=json.dumps(date),
+            response=json.dumps(receipt_data),
             mimetype='application/json'
         )
 
@@ -105,17 +104,11 @@ def upload_image():
         return redirect(request.url)
 
 
-def start(running=None):
+def start():
+    info("Start in workdir + " + get_work_dir())
+    info("Start flusk server with TLS support")
+    info("Cert file: " + get_work_dir() + CERT_LOCATION)
+    info("Key file: " + get_work_dir() + KEY_LOCATION)
 
-    if running == 0:
-        info("Start in workdir + " + get_work_dir())
-        info("Start flusk server with TLS support")
-        info("Cert file: " + get_work_dir() + CERT_LOCATION)
-        info("Key file: " + get_work_dir() + KEY_LOCATION)
+    app.run(ALLOWED_HOST, ALLOWED_PORT, ssl_context=(get_work_dir() + CERT_LOCATION, get_work_dir() + KEY_LOCATION))
 
-        app.run(ALLOWED_HOST, ALLOWED_PORT, ssl_context=(get_work_dir() + CERT_LOCATION, get_work_dir() + KEY_LOCATION))
-        running = 1
-
-
-if __name__ == '__main__':
-    start(running=0)
