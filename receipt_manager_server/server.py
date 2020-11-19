@@ -55,10 +55,19 @@ def json_serial(obj):
     raise TypeError("Type %s not serializable" % type(obj))
 
 
+def print_receipt_list(receipt):
+    if not receipt.items:
+        return None
+
+    for _ in map(print, receipt.items):
+        pass
+
+
 def print_receipt(receipt):
     print("Company:    ", save_ret(receipt.market))
     print("Date:       ", save_ret(receipt.date))
     print("Amount:     ", save_ret(receipt.sum))
+    print("Items:     ", print_receipt_list(receipt))
 
 
 @app.route("/api/upload/", methods=["POST"])
@@ -87,7 +96,6 @@ def upload_image():
         receipt = process_receipt(config, filename)
 
         print_receipt(receipt)
-
         receipt_data = {"storeName": receipt.market,
                         "receiptTotal": receipt.sum,
                         "receiptDate": dumps(receipt.date, default=json_serial),
