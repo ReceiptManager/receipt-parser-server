@@ -15,13 +15,8 @@ UPLOAD_FOLDER = 'data/img'
 CERT_LOCATION = "cert/server.crt"
 KEY_LOCATION = "cert/server.key"
 DATA_PREFIX = "data/img/"
-app = Flask(__name__)
-app.debug = True
-app.secret_key = "ignore_me"
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# 16 MB
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 * 1024
+app = Flask(__name__)
 
 
 def allowed_file(filename):
@@ -115,10 +110,10 @@ def upload_image():
 
 
 def start():
-    info("Start in workdir + " + get_work_dir())
-    info("Start flusk server with TLS support")
-    info("Cert file: " + get_work_dir() + CERT_LOCATION)
-    info("Key file: " + get_work_dir() + KEY_LOCATION)
+    #app.debug = True
+    app.secret_key = "ignore_me"
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 * 1024
 
     app.run(ALLOWED_HOST, ALLOWED_PORT, ssl_context=(get_work_dir() + CERT_LOCATION, get_work_dir() + KEY_LOCATION))
 
