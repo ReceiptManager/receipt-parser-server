@@ -65,7 +65,7 @@ cd Server
 pip install -r requirements.txt
 ```
 
-If you have not pip installed. Use `apt-get install python python-pip`.
+If you have not pip installed. Use your favorite package manager to install `python` and `python-pip`.
 Now, generate new ssl certficates. First generate an new file called `.private_key` and
 type your favorite password.
 ```
