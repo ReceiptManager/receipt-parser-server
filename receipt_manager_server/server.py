@@ -4,8 +4,8 @@ from datetime import datetime, date
 from json import dumps
 
 from flask import Flask, flash, request, redirect
-from receipt_parser.config import read_config
-from receipt_parser.enhancer import process_receipt
+from receipt_parser_core.config import read_config
+from receipt_parser_core.enhancer import process_receipt
 from werkzeug.utils import secure_filename
 
 ALLOWED_PORT = 8721
