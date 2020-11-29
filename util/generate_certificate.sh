@@ -3,6 +3,7 @@
 NUMBER_OF_DAYS=100
 ROOT_CERTIFICATE_KEY="cert/rootCA.key"
 ROOT_CERTIFICATE_NAME="cert/rootCA.pem"
+PRIVATE_KEY_FILE=".private_key"
 LENGTH_OF_CERTIFICATE=4096
 CERTIFICATE_TYPE=x509
 HASH_ALGORITHM=sha512
@@ -10,8 +11,8 @@ HASH_ALGORITHM=sha512
 generate_root_ca() {
   openssl genrsa \
     -des3 \
-    -out $ROOT_CERTIFICATE_KEY $LENGTH_OF_CERTIFICATE \
-    -passin file:.private_key 
+    -passout file:$PRIVATE_KEY_FILE\
+    -out $ROOT_CERTIFICATE_KEY $LENGTH_OF_CERTIFICATE 
 
   openssl req -$CERTIFICATE_TYPE \
     -new \
@@ -19,7 +20,7 @@ generate_root_ca() {
     -$HASH_ALGORITHM \
     -days $NUMBER_OF_DAYS \
     -out $ROOT_CERTIFICATE_NAME \
-    -passin file:.private_key\
+    -passin file:$PRIVATE_KEY_FILE\
     -config cert/server.csr.cnf
 }
 
@@ -28,7 +29,7 @@ create_server_certificate() {
     -new -$HASH_ALGORITHM \
     -nodes \
     -out cert/server.csr \
-    -passin file:.private_key \
+    -passin file:$PRIVATE_KEY_FILE \
     -newkey rsa:$LENGTH_OF_CERTIFICATE \
     -keyout cert/server.key \
     -config cert/server.csr.cnf
@@ -40,11 +41,19 @@ create_server_certificate() {
     -CAcreateserial -out cert/server.crt \
     -days $NUMBER_OF_DAYS \
     -$HASH_ALGORITHM \
-    -passin file:.private_key\
+    -passin file:$PRIVATE_KEY_FILE\
     -extfile cert/v3.ext
 }
 
+submit_password() {
+    if [ ! -f ".private_key" ];then
+        echo "Submit default password"
+        echo "change_me"  > $PRIVATE_KEY_FILE
+    fi
+}
+
 main() {
+  submit_password
   generate_root_ca
   create_server_certificate
 }
