@@ -1,30 +1,4 @@
-<p align="center">
-<img src="https://miro.medium.com/max/700/1*VfeXSnc08x6BTCbPNPCfIg.jpeg">
-</p>
-
 # ReceiptManger server
-The server parses the receipt via tesseract which is a very hard task.
-The main problem is the image quality of the smartphone camera. 
-To tackle this issue, I enhance the image using a variety of techniques. 
-First, I resize the image.
-
-<p align="center">
-<img src="https://miro.medium.com/max/700/1*bC0DxIy-W0l-mtuesaCe3g.png"></p
-
-Where FX and FY describes the scaling factor of the image.
-In this case, INTER_CUBIC generally performs better than other alternatives, though it’s also slower than others. 
-Since we care about quality I do not use the INTER_LINEAR.
-
-What got the ball rolling was the gaussian blurring which uses the Gaussian kernel instead of a normalized box filter, for convolution.
-In our case, the dimensions of the kernel and the standard deviations in both directions can be determined independently. 
-It is very useful to remove noise from the image thus it does not preserve the edges in the input.
-
-To remove the salt and peppter noise in the image. I applied a median blurring. 
-The central element in the kernel area is replaced with the median of all the pixels under the kernel.
-
-After, I use convert to increase the contrast. 
-This is very important since it massively increase the outcome but this is covered in the receipt parser library.
-
 ## How it works
 
 <p align="center">
@@ -91,35 +65,11 @@ server ip in the application, see [here](https://github.com/ReceiptManager/Appli
 </p>
 
 ### Build using docker
-The docker image is currently tested. There might be some bugs present at the moment. However, the installation is much simpler.
-First, check if docker is running
+The docker image is now available at https://hub.docker.com/repository/docker/monolidth/receipt-parser. You can `pull`
+the image using `docker pull`. After you can run the image.
 ```
-systemctl status docker
-```
-
-<p align="center">
-<img src="https://i.imgur.com/OSqiDh8.png"></p>
-
-Now clone the server repository.
-```
-git clone https://github.com/ReceiptManager/Server
-```
-
-Navigate in the `server` directory and generate an new file called `.private_key` and
-type your favorite password (please replace favorite_password with something stronger).
-```
-cd Server
-echo "favorite_password" > .private_key
-```
-
-Create an docker `image`
-```
-make docker-build
-```
-
-If it is successfull. You can run the docker image
-```
-docker run -p 8721:8721 monolidth/receipt-parser-server
+docker pull monolidth/receipt-parser:latest
+docker run -p 8721:8721 monolidth/receipt-parser
 ```
 
 <p align="center">
@@ -127,8 +77,7 @@ docker run -p 8721:8721 monolidth/receipt-parser-server
 </p>
 
 
-If you do all steps correctly. The server is running at `https://[YOUR-IP]:8721`.
-There might be an image on docker hub in the future, thus at the moment it is required to build the image manual.
+If you do all steps correctly. The server is running at `https://[YOUR-IP]:8721`. 
 
 ### Questions
 If there any questions, bug or enhancements, please raise an issue or read my medium article about this. You can
