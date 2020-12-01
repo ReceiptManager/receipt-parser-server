@@ -65,19 +65,7 @@ server ip in the application, see [here](https://github.com/ReceiptManager/Appli
 </p>
 
 ### Build using docker
-The docker image is now available at https://hub.docker.com/repository/docker/monolidth/receipt-parser. You can `pull`
-the image using `docker pull`. After you can run the image.
-```
-docker pull monolidth/receipt-parser:latest
-docker run -p 8721:8721 monolidth/receipt-parser
-```
-
-<p align="center">
-  <img src="https://i.imgur.com/xcwvmYa.png">
-</p>
-
-
-If you do all steps correctly. The server is running at `https://[YOUR-IP]:8721`. 
+Please visit the [wiki](https://github.com/ReceiptManager/receipt-parser-server/wiki/Install-using-docker).
 
 ### Questions
 If there any questions, bug or enhancements, please raise an issue or read my medium article about this. You can
