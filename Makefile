@@ -20,15 +20,3 @@ docker-push:
 .PHONY: docker-run
 docker-run:
 	docker run -v `pwd`/data/img:/app/data/img monolidth/receipt-parser-server
-
-.PHONY: install
-install:
-	poetry install
-
-.PHONY: run
-run:
-	poetry run
-
-.PHONY: publish
-publish:
-	poetry publish --build
