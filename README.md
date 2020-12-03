@@ -10,7 +10,7 @@ All the needed info about how to "install | use | enjoy" `receipt-parser-server`
 
 - *II. Getting started*
   - [Developer installation guide](https://github.com/ReceiptManager/receipt-parser-server/wiki/Install-using-pip)
-  - [DOCKER installation guide](https://github.com/ReceiptManager/receipt-parser-server/wiki/Install-using-docke)
+  - [Docker installation guide](https://github.com/ReceiptManager/receipt-parser-server/wiki/Install-using-docke)
   
 
 ### Questions
