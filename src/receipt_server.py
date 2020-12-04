@@ -1,22 +1,54 @@
-import json
 import os
+import json
+import shutil
 from datetime import datetime, date
 from json import dumps
 
-from flask import Flask, flash, request, redirect
+import uvicorn
+from fastapi import FastAPI, Security, HTTPException, Depends, UploadFile, File
+from fastapi.security.api_key import APIKeyQuery, APIKeyCookie, APIKeyHeader, APIKey
 from receipt_parser_core.config import read_config
 from receipt_parser_core.enhancer import process_receipt
+from starlette.responses import RedirectResponse
+from starlette.status import HTTP_403_FORBIDDEN
 from werkzeug.utils import secure_filename
 
+# ========================================= < CONFIG > =========================================
+API_KEY = "44meJNNOAfuzT"
+API_KEY_NAME = "access_token"
+COOKIE_DOMAIN = "localtest.me"
 ALLOWED_PORT = 8721
 ALLOWED_HOST = "0.0.0.0"
+
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 UPLOAD_FOLDER = 'data/img'
 CERT_LOCATION = "cert/server.crt"
 KEY_LOCATION = "cert/server.key"
 DATA_PREFIX = "data/img/"
+# ========================================= < CONFIG > =========================================
 
-app = Flask(__name__)
+api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
+
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+
+
+async def get_api_key(
+        api_key_query: str = Security(api_key_query),
+        api_key_header: str = Security(api_key_header),
+        api_key_cookie: str = Security(api_key_cookie),
+):
+    if api_key_query == API_KEY:
+        return api_key_query
+    elif api_key_header == API_KEY:
+        return api_key_header
+    elif api_key_cookie == API_KEY:
+        return api_key_cookie
+    else:
+        raise HTTPException(
+            status_code=HTTP_403_FORBIDDEN, detail="Could not validate credentials"
+        )
 
 
 def allowed_file(filename):
@@ -65,26 +97,19 @@ def print_receipt(receipt):
     print("Items:     ", print_receipt_list(receipt))
 
 
-@app.route("/api/upload/", methods=["POST"])
-def upload_image():
-    if "image" not in request.files:
-        error("No image exist")
-        flash("No file part")
-        return redirect(request.url)
-
-    file = request.files["image"]
+@app.post("/api/upload", tags=["test"])
+async def get_open_api_endpoint(file: UploadFile = File(...), api_key: APIKey = Depends(get_api_key)):
     if file.filename == "":
         error("No filename exist")
-        flash("Image has no filename")
-        return redirect(request.url)
+        return "invalid_image"
 
     if file and allowed_file(file.filename):
-        info('Uploaded file: ' + file.filename)
-
         filename = secure_filename(file.filename)
-        output = os.path.join(get_work_dir() + app.config["UPLOAD_FOLDER"], filename)
+        output = os.path.join(get_work_dir() + UPLOAD_FOLDER, filename)
         info("Store file at: " + output)
-        file.save(output)
+
+        with open(output, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
 
         info("Parsing image")
         config = read_config(get_work_dir() + "/config.yml")
@@ -96,27 +121,15 @@ def upload_image():
                         "receiptDate": dumps(receipt.date, default=json_serial),
                         "receiptCategory": "grocery"}
 
-        response = app.response_class(
-            response=json.dumps(receipt_data),
-            mimetype='application/json'
-        )
-
-        return response
-
-    else:
-        error("Invalid image or filetype")
-        flash("Allowed image types are -> png, jpg, jpeg, gif")
-        return redirect(request.url)
+        return json.dumps(receipt_data)
 
 
-def start():
-    #app.debug = True
-    app.secret_key = "ignore_me"
-    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 * 1024
-
-    app.run(ALLOWED_HOST, ALLOWED_PORT, ssl_context=(get_work_dir() + CERT_LOCATION, get_work_dir() + KEY_LOCATION))
+@app.get("/logout")
+async def route_logout_and_remove_cookie():
+    response = RedirectResponse(url="/")
+    response.delete_cookie(API_KEY_NAME, domain=COOKIE_DOMAIN)
+    return response
 
 
-if __name__ == '__main__':
-    start()
+if __name__ == "__main__":
+    uvicorn.run("receipt_server:app", host="127.0.0.1", port=ALLOWED_PORT, log_level="debug")

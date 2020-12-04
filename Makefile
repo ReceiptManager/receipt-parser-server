@@ -7,7 +7,7 @@ generate_cert:
 	bash util/generate_certificate.sh
 
 serve:
-	python receipt_manager_server/server.py
+	python src/receipt_server.py
 
 PHONY: docker-build
 docker-build:

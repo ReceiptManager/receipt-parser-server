@@ -11,6 +11,8 @@ RUN mkdir -p /app/data/img
 RUN mkdir -p /app/data/tmp
 RUN mkdir -p /app/data/txt
 
+RUN $(tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo '' > /app/.api_token)
+
 RUN pip install -r requirements.txt --verbose
 RUN make generate_cert
 CMD ["make", "serve"]
