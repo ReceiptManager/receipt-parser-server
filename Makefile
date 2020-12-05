@@ -6,6 +6,9 @@ clean:
 generate_cert:
 	bash util/generate_certificate.sh
 
+generate_token:
+	bash util/generate_api_token.sh
+
 serve:
 	python src/receipt_server.py
 
