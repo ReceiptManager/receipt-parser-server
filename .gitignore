@@ -332,3 +332,5 @@ tags
 [._]*.un~
 
 # End of https://www.toptal.com/developers/gitignore/api/pycharm,pycharm+all,python,vim
+
+.api_token
