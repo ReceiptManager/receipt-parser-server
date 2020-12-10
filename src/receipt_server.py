@@ -3,7 +3,6 @@ import os
 import shutil
 from json import dumps
 
-import receipt_api as api
 import receipt_printer as printer
 import uvicorn
 from fastapi import FastAPI, Depends, UploadFile, File, Security, HTTPException
@@ -50,14 +49,14 @@ async def get_api_key(
         )
 
 # Set header and cookies
-api_key_query = APIKeyQuery(name=api.API_KEY_NAME, auto_error=False)
-api_key_header = APIKeyHeader(name=api.API_KEY_NAME, auto_error=False)
-api_key_cookie = APIKeyCookie(name=api.API_KEY_NAME, auto_error=False)
+api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 # Current image api
 @app.post("/api/upload", tags=["api"])
-async def get_open_api_endpoint(file: UploadFile = File(...), api_key: APIKey = Depends(api.get_api_key)):
+async def get_open_api_endpoint(file: UploadFile = File(...), api_key: APIKey = Depends(get_api_key)):
     if file.filename == "":
         printer.error("No filename exist")
         raise HTTPException(
@@ -65,6 +64,8 @@ async def get_open_api_endpoint(file: UploadFile = File(...), api_key: APIKey = 
         )
 
     if file and util.allowed_file(file.filename):
+        print(file.filename)
+
         filename = secure_filename(file.filename)
         output = os.path.join(util.get_work_dir() + UPLOAD_FOLDER, filename)
         printer.info("Store file at: " + output)
