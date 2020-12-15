@@ -5,7 +5,7 @@ Pillow==8.0.1
 python_dateutil==2.8.1
 PyYAML==5.3.1
 wand==0.6.5
-pytesseract==0.3.6
+pytesseract==0.3.7
 munch==2.5.0
 opencv-python
 receipt-parser-core==0.1.3
