@@ -1,0 +1,5 @@
+starlette==0.13.6
+uvicorn==0.13.1
+Werkzeug==1.0.1
+fastapi==0.62.0
+receipt_parser_core==0.1.3
