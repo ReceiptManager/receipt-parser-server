@@ -2,6 +2,7 @@ import json
 import os
 import shutil
 from json import dumps
+import socket
 
 import receipt_printer as printer
 import uvicorn
@@ -97,5 +98,7 @@ async def route_logout_and_remove_cookie():
 
 
 if __name__ == "__main__":
-    uvicorn.run("receipt_server:app", host="192.168.0.103", port=8721, log_level="debug",
+    hostname = socket.gethostname()
+    ip_address = socket.gethostbyname(hostname)
+    uvicorn.run("receipt_server:app", host=ip_address, port=8721, log_level="debug",
                 ssl_certfile=util.get_work_dir() + CERT_LOCATION, ssl_keyfile = util.get_work_dir() + KEY_LOCATION)
