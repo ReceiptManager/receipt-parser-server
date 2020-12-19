@@ -30,7 +30,7 @@ API_TOKEN_FILE = ".api_token"
 # fallback key
 API_KEY = "44meJNNOAfuzT"
 
-if not os.path.isfile(API_TOKEN_FILE):
+def generate_api_token():
     random_string = ''
     for _ in range(10):
         random_integer = random.randint(97, 97 + 26 - 1)
@@ -38,15 +38,24 @@ if not os.path.isfile(API_TOKEN_FILE):
         random_integer = random_integer - 32 if flip_bit == 1 else random_integer
         random_string += (chr(random_integer))
 
+    tokenFile = open(API_TOKEN_FILE, "w")
+    tokenFile.write(random_string)
+    tokenFile.close()
 
-    API_KEY = random_string
-    f = open(API_TOKEN_FILE, "w")
-    f.write(API_KEY)
-    f.close()
+    return random_string
+
+
+
+if not os.path.isfile(API_TOKEN_FILE):
+    API_KEY = generate_api_token()
 
 else:
     with open(API_TOKEN_FILE) as f:
-        API_KEY = f.readline().strip()
+        line = f.readline().strip()
+        if not line:
+            API_KEY = generate_api_token()
+        else:
+            API_KEY = line
 
 API_KEY_NAME = "access_token"
 api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
