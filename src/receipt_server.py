@@ -1,12 +1,13 @@
 import json
 import os
+import random
 import shutil
 import socket
-import random
 from json import dumps
 
 import receipt_printer as printer
 import uvicorn
+from colors import bcolors
 from fastapi import FastAPI, Depends, UploadFile, File, Security, HTTPException
 from fastapi.security.api_key import APIKeyQuery, APIKeyCookie, APIKeyHeader, APIKey
 from receipt_parser_core.config import read_config
@@ -129,6 +130,7 @@ async def route_logout_and_remove_cookie():
 if __name__ == "__main__":
     hostname = socket.gethostname()
     ip_address = socket.gethostbyname(hostname)
-    print("Current API token: " + API_KEY)
+
+    print("Current API token: " + bcolors.OKGREEN + API_KEY)
     uvicorn.run("receipt_server:app", host="0.0.0.0", port=8721, log_level="debug",
                 ssl_certfile=util.get_work_dir() + CERT_LOCATION, ssl_keyfile=util.get_work_dir() + KEY_LOCATION)
