@@ -1,8 +1,9 @@
 import json
 import os
 import shutil
-from json import dumps
 import socket
+import random
+from json import dumps
 
 import receipt_printer as printer
 import uvicorn
@@ -24,11 +25,30 @@ UPLOAD_FOLDER = 'data/img'
 CERT_LOCATION = "cert/server.crt"
 KEY_LOCATION = "cert/server.key"
 DATA_PREFIX = "data/img/"
+API_TOKEN_FILE = ".api_token"
+
+# fallback key
+API_KEY = "44meJNNOAfuzT"
+
+if not os.path.isfile(API_TOKEN_FILE):
+    random_string = ''
+    for _ in range(10):
+        random_integer = random.randint(97, 97 + 26 - 1)
+        flip_bit = random.randint(0, 1)
+        random_integer = random_integer - 32 if flip_bit == 1 else random_integer
+        random_string += (chr(random_integer))
 
 
-API_KEY = "44meJNNOAfuzT" # not final
+    API_KEY = random_string
+    f = open(API_TOKEN_FILE, "w")
+    f.write(API_KEY)
+    f.close()
+
+else:
+    with open(API_TOKEN_FILE) as f:
+        API_KEY = f.readline().strip()
+
 API_KEY_NAME = "access_token"
-
 api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
@@ -100,5 +120,6 @@ async def route_logout_and_remove_cookie():
 if __name__ == "__main__":
     hostname = socket.gethostname()
     ip_address = socket.gethostbyname(hostname)
-    uvicorn.run("receipt_server:app", host=ip_address, port=8721, log_level="debug",
-                ssl_certfile=util.get_work_dir() + CERT_LOCATION, ssl_keyfile = util.get_work_dir() + KEY_LOCATION)
+    print("Current API token: " + API_KEY)
+    uvicorn.run("receipt_server:app", host="0.0.0.0", port=8721, log_level="debug",
+                ssl_certfile=util.get_work_dir() + CERT_LOCATION, ssl_keyfile=util.get_work_dir() + KEY_LOCATION)
