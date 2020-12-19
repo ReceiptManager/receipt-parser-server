@@ -123,7 +123,7 @@ async def get_open_api_endpoint(file: UploadFile = File(...), api_key: APIKey = 
 @app.get("/logout")
 async def route_logout_and_remove_cookie():
     response = RedirectResponse(url="/")
-    response.delete_cookie(api.API_KEY_NAME, domain=COOKIE_DOMAIN)
+    response.delete_cookie(API_KEY_NAME, domain=COOKIE_DOMAIN)
     return response
 
 
