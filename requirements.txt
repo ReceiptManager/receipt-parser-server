@@ -1,5 +1,5 @@
 starlette==0.14.1
-uvicorn==0.13.2
+uvicorn==0.13.3
 Werkzeug==1.0.1
 fastapi==0.63.0
 receipt_parser_core==0.1.3
