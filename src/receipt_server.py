@@ -18,6 +18,11 @@ from werkzeug.utils import secure_filename
 
 import util as util
 
+import sys
+sys.path.insert(0, 'receipt-parser-neuronal/invoicenet/api/')
+from predict_api import predict
+
+
 COOKIE_DOMAIN = "localtest.me"
 ALLOWED_PORT = 8721
 ALLOWED_HOST = "0.0.0.0"
