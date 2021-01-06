@@ -9,13 +9,14 @@ import receipt_printer as printer
 import uvicorn
 from colors import bcolors
 from fastapi import FastAPI, Depends, UploadFile, File, Security, HTTPException
+from fastapi.encoders import jsonable_encoder
 from fastapi.security.api_key import APIKeyQuery, APIKeyCookie, APIKeyHeader, APIKey
 from receipt_parser_core.config import read_config
 from receipt_parser_core.enhancer import process_receipt
 from starlette.responses import RedirectResponse
 from starlette.status import HTTP_403_FORBIDDEN
 from werkzeug.utils import secure_filename
-
+from fastapi.responses import JSONResponse
 import util as util
 
 #import sys
@@ -114,12 +115,15 @@ async def get_open_api_endpoint(file: UploadFile = File(...), api_key: APIKey = 
         receipt = process_receipt(config, filename)
 
         printer.print_receipt(receipt)
-        receipt_data = {"storeName": receipt.market,
+
+        receipt_data = {"storeName":receipt.market ,
                         "receiptTotal": receipt.sum,
                         "receiptDate": dumps(receipt.date, default=util.json_serial),
                         "receiptCategory": "grocery"}
 
-        return json.dumps(receipt_data)
+        json_compatible_item_data = jsonable_encoder(receipt_data)
+        return JSONResponse(content=json_compatible_item_data)
+        #return json.dumps(receipt_data)
     else:
         raise HTTPException(
             status_code=500, detail="Invalid image send"
