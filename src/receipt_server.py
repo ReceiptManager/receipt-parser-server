@@ -18,9 +18,9 @@ from werkzeug.utils import secure_filename
 
 import util as util
 
-import sys
-sys.path.insert(0, 'receipt-parser-neuronal/invoicenet/api/')
-from predict_api import predict
+#import sys
+#sys.path.insert(0, 'receipt-parser-neuronal/invoicenet/api/')
+#from predict_api import predict
 
 
 COOKIE_DOMAIN = "localtest.me"
