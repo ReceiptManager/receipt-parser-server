@@ -3,6 +3,8 @@ import os
 import random
 import shutil
 import socket
+from json.encoder import JSONEncoder
+from collections import namedtuple
 from json import dumps
 
 import receipt_printer as printer
@@ -36,6 +38,17 @@ API_TOKEN_FILE = ".api_token"
 
 # fallback key
 API_KEY = "44meJNNOAfuzT"
+PRINT_DEBUG_OUTPUT=False
+
+class TupelEncoder(JSONEncoder):
+
+    def _iterencode(self, obj, markers=None):
+        if isinstance(obj, tuple) and hasattr(obj, '_asdict'):
+            gen = self._iterencode_dict(obj._asdict(), markers)
+        else:
+            gen = JSONEncoder._iterencode(self, obj, markers)
+        for chunk in gen:
+            yield chunk
 
 def generate_api_token():
     random_string = ''
@@ -110,6 +123,21 @@ async def get_open_api_endpoint(file: UploadFile = File(...), api_key: APIKey = 
         with open(output, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
+        if PRINT_DEBUG_OUTPUT:
+            items = []
+            # example items
+            item = namedtuple("item", ("article", "sum"))
+            items.append(item("Brot","1.33"))
+            items.append(item("Kaffee", "5.33"))
+
+            receipt_data = {"storeName": "DebugStore",
+                            "receiptTotal": "15.10",
+                            "receiptDate": "09.25.2020",
+                            "receiptItems" : items,
+                            "receiptCategory": "grocery"}
+            json_compatible_item_data = jsonable_encoder(receipt_data)
+            return JSONResponse(content=json_compatible_item_data)
+
         printer.info("Parsing image")
         config = read_config(util.get_work_dir() + "/config.yml")
         receipt = process_receipt(config, filename)
@@ -119,11 +147,12 @@ async def get_open_api_endpoint(file: UploadFile = File(...), api_key: APIKey = 
         receipt_data = {"storeName":receipt.market ,
                         "receiptTotal": receipt.sum,
                         "receiptDate": dumps(receipt.date, default=util.json_serial),
+                        "receiptItems": receipt.items,
                         "receiptCategory": "grocery"}
 
         json_compatible_item_data = jsonable_encoder(receipt_data)
         return JSONResponse(content=json_compatible_item_data)
-        #return json.dumps(receipt_data)
+
     else:
         raise HTTPException(
             status_code=500, detail="Invalid image send"
