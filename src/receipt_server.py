@@ -1,24 +1,24 @@
-import json
 import os
 import random
 import shutil
 import socket
-from json.encoder import JSONEncoder
 from collections import namedtuple
 from json import dumps
+from json.encoder import JSONEncoder
 
 import receipt_printer as printer
 import uvicorn
 from colors import bcolors
 from fastapi import FastAPI, Depends, UploadFile, File, Security, HTTPException
 from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from fastapi.security.api_key import APIKeyQuery, APIKeyCookie, APIKeyHeader, APIKey
 from receipt_parser_core.config import read_config
 from receipt_parser_core.enhancer import process_receipt
 from starlette.responses import RedirectResponse
 from starlette.status import HTTP_403_FORBIDDEN
 from werkzeug.utils import secure_filename
-from fastapi.responses import JSONResponse
+
 import util as util
 
 #import sys
@@ -106,7 +106,14 @@ app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 # Current image api
 @app.post("/api/upload", tags=["api"])
-async def get_open_api_endpoint(file: UploadFile = File(...), api_key: APIKey = Depends(get_api_key)):
+async def get_open_api_endpoint(
+        legacy_parser: bool = True,
+        grayscale_image: bool = True,
+        gaussian_blur = False,
+        rotate_image = False,
+        file: UploadFile = File(...),
+        api_key: APIKey = Depends(get_api_key)):
+
     if file.filename == "":
         printer.error("No filename exist")
         raise HTTPException(
@@ -125,7 +132,6 @@ async def get_open_api_endpoint(file: UploadFile = File(...), api_key: APIKey = 
 
         if PRINT_DEBUG_OUTPUT:
             items = []
-            # example items
             item = namedtuple("item", ("article", "sum"))
             items.append(item("Brot","1.33"))
             items.append(item("Kaffee", "5.33"))
@@ -140,7 +146,7 @@ async def get_open_api_endpoint(file: UploadFile = File(...), api_key: APIKey = 
 
         printer.info("Parsing image")
         config = read_config(util.get_work_dir() + "/config.yml")
-        receipt = process_receipt(config, filename)
+        receipt = process_receipt(config, filename,)
 
         printer.print_receipt(receipt)
 
