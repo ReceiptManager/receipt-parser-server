@@ -21,9 +21,9 @@ from werkzeug.utils import secure_filename
 
 import util as util
 
-#import sys
-#sys.path.insert(0, 'receipt-parser-neuronal/invoicenet/api/')
-#from predict_api import predict
+# import sys
+# sys.path.insert(0, 'receipt-parser-neuronal/invoicenet/api/')
+# from predict_api import predict
 
 
 COOKIE_DOMAIN = "localtest.me"
@@ -38,7 +38,8 @@ API_TOKEN_FILE = ".api_token"
 
 # fallback key
 API_KEY = "44meJNNOAfuzT"
-PRINT_DEBUG_OUTPUT=False
+PRINT_DEBUG_OUTPUT = False
+
 
 class TupelEncoder(JSONEncoder):
 
@@ -49,6 +50,7 @@ class TupelEncoder(JSONEncoder):
             gen = JSONEncoder._iterencode(self, obj, markers)
         for chunk in gen:
             yield chunk
+
 
 def generate_api_token():
     random_string = ''
@@ -63,7 +65,6 @@ def generate_api_token():
     tokenFile.close()
 
     return random_string
-
 
 
 if not os.path.isfile(API_TOKEN_FILE):
@@ -82,6 +83,7 @@ api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
 
+
 async def get_api_key(
         api_query: str = Security(api_key_query),
         api_header: str = Security(api_key_header),
@@ -98,22 +100,23 @@ async def get_api_key(
             status_code=HTTP_403_FORBIDDEN, detail="Could not validate credentials"
         )
 
+
 # Set header and cookies
 api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
+
 # Current image api
 @app.post("/api/upload", tags=["api"])
 async def get_open_api_endpoint(
         legacy_parser: bool = True,
-        grayscale_image: bool = True,
-        gaussian_blur = False,
-        rotate_image = False,
+        grayscale_image: bool = False,
+        gaussian_blur: bool = False,
+        rotate_image: bool = False,
         file: UploadFile = File(...),
         api_key: APIKey = Depends(get_api_key)):
-
     if file.filename == "":
         printer.error("No filename exist")
         raise HTTPException(
@@ -133,24 +136,25 @@ async def get_open_api_endpoint(
         if PRINT_DEBUG_OUTPUT:
             items = []
             item = namedtuple("item", ("article", "sum"))
-            items.append(item("Brot","1.33"))
+            items.append(item("Brot", "1.33"))
             items.append(item("Kaffee", "5.33"))
 
             receipt_data = {"storeName": "DebugStore",
                             "receiptTotal": "15.10",
                             "receiptDate": "09.25.2020",
-                            "receiptItems" : items,
+                            "receiptItems": items,
                             "receiptCategory": "grocery"}
             json_compatible_item_data = jsonable_encoder(receipt_data)
             return JSONResponse(content=json_compatible_item_data)
 
         printer.info("Parsing image")
         config = read_config(util.get_work_dir() + "/config.yml")
-        receipt = process_receipt(config, filename,)
+        receipt = process_receipt(config, filename, rotate=rotate_image, grayscale=grayscale_image,
+                                  gaussian_blur=gaussian_blur)
 
         printer.print_receipt(receipt)
 
-        receipt_data = {"storeName":receipt.market ,
+        receipt_data = {"storeName": receipt.market,
                         "receiptTotal": receipt.sum,
                         "receiptDate": dumps(receipt.date, default=util.json_serial),
                         "receiptItems": receipt.items,
@@ -163,6 +167,7 @@ async def get_open_api_endpoint(
         raise HTTPException(
             status_code=500, detail="Invalid image send"
         )
+
 
 @app.get("/logout")
 async def route_logout_and_remove_cookie():
