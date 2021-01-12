@@ -142,8 +142,8 @@ async def get_open_api_endpoint(
             receipt_data = {"storeName": "DebugStore",
                             "receiptTotal": "15.10",
                             "receiptDate": "09.25.2020",
-                            "receiptItems": items,
-                            "receiptCategory": "grocery"}
+                            "receiptCategory": "grocery",
+                            "receiptItems": items}
             json_compatible_item_data = jsonable_encoder(receipt_data)
             return JSONResponse(content=json_compatible_item_data)
 
@@ -157,8 +157,8 @@ async def get_open_api_endpoint(
         receipt_data = {"storeName": receipt.market,
                         "receiptTotal": receipt.sum,
                         "receiptDate": dumps(receipt.date, default=util.json_serial),
-                        "receiptItems": receipt.items,
-                        "receiptCategory": "grocery"}
+                        "receiptCategory": "grocery",
+                        "receiptItems": receipt.items}
 
         json_compatible_item_data = jsonable_encoder(receipt_data)
         return JSONResponse(content=json_compatible_item_data)
