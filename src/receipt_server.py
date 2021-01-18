@@ -1,9 +1,8 @@
 import os
 import random
 import shutil
-import socket
 from collections import namedtuple
-from json import dumps
+import json
 from json.encoder import JSONEncoder
 
 import receipt_printer as printer
@@ -13,6 +12,7 @@ from fastapi import FastAPI, Depends, UploadFile, File, Security, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from fastapi.security.api_key import APIKeyQuery, APIKeyCookie, APIKeyHeader, APIKey
+from pydantic import BaseModel
 from receipt_parser_core.config import read_config
 from receipt_parser_core.enhancer import process_receipt
 from starlette.responses import RedirectResponse
@@ -31,6 +31,8 @@ ALLOWED_PORT = 8721
 ALLOWED_HOST = "0.0.0.0"
 
 UPLOAD_FOLDER = 'data/img'
+TMP_FOLDER = 'data/tmp/'
+TRAINING_FOLDER = 'data/training/'
 CERT_LOCATION = "cert/server.crt"
 KEY_LOCATION = "cert/server.key"
 DATA_PREFIX = "data/img/"
@@ -108,11 +110,42 @@ api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
 
+class Receipt(BaseModel):
+    company: str
+    date: str
+    total: str
+
+
+
+# Prepare training dataset for neuronal parser
+# If an photo is submitted, upload the corresponding json file
+@app.post("/api/training", tags=["api"])
+async def get_open_api_endpoint(receipt: Receipt,
+                                api_key: APIKey = Depends(get_api_key)):
+    search_dir = util.get_work_dir() + TMP_FOLDER
+    file = util.get_last_modified_file(search_dir)
+
+    search_dir = util.get_work_dir() + TRAINING_FOLDER
+    last = util.get_last_modified_file(search_dir)
+
+    if not last:
+        index = 0
+    else:
+        index = int(os.path.basename(last).split(".")[0])
+        index = index + 1
+
+    shutil.copyfile(file, util.get_work_dir() + TRAINING_FOLDER + str(index) + ".png" )
+    trainingSet = {'company': receipt.company, "date": receipt.date, "total": receipt.total}
+
+    with open(TRAINING_FOLDER + str(index) + '.json', 'w+') as out:
+        json.dump(trainingSet, out)
+
+
 # Current image api
 @app.post("/api/upload", tags=["api"])
 async def get_open_api_endpoint(
         legacy_parser: bool = True,
-        grayscale_image: bool = False,
+        grayscale_image: bool = True,
         gaussian_blur: bool = False,
         rotate_image: bool = False,
         file: UploadFile = File(...),
@@ -144,6 +177,7 @@ async def get_open_api_endpoint(
                             "receiptDate": "09.25.2020",
                             "receiptCategory": "grocery",
                             "receiptItems": items}
+
             json_compatible_item_data = jsonable_encoder(receipt_data)
             return JSONResponse(content=json_compatible_item_data)
 
@@ -156,7 +190,7 @@ async def get_open_api_endpoint(
 
         receipt_data = {"storeName": receipt.market,
                         "receiptTotal": receipt.sum,
-                        "receiptDate": dumps(receipt.date, default=util.json_serial),
+                        "receiptDate": json.dumps(receipt.date, default=util.json_serial),
                         "receiptCategory": "grocery",
                         "receiptItems": receipt.items}
 
@@ -175,11 +209,7 @@ async def route_logout_and_remove_cookie():
     response.delete_cookie(API_KEY_NAME, domain=COOKIE_DOMAIN)
     return response
 
-
 if __name__ == "__main__":
-    hostname = socket.gethostname()
-    ip_address = socket.gethostbyname(hostname)
-
     print("Current API token: " + bcolors.OKGREEN + API_KEY)
-    uvicorn.run("receipt_server:app", host="0.0.0.0", port=8721, log_level="debug",
+    uvicorn.run("receipt_server:app", host="0.0.0.0", port=ALLOWED_PORT, log_level="info",
                 ssl_certfile=util.get_work_dir() + CERT_LOCATION, ssl_keyfile=util.get_work_dir() + KEY_LOCATION)

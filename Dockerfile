@@ -9,6 +9,7 @@ COPY . .
 
 RUN mkdir -p /app/data/img
 RUN mkdir -p /app/data/tmp
+RUN mkdir -p /app/data/training
 RUN mkdir -p /app/data/txt
 
 RUN echo $(tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo '') > /app/.api_token
