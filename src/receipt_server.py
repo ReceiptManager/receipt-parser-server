@@ -131,8 +131,12 @@ async def get_open_api_endpoint(receipt: Receipt,
     if not last:
         index = 0
     else:
-        index = int(os.path.basename(last).split(".")[0])
-        index = index + 1
+        filename = os.path.basename(last).split(".")[0]
+        if not filename or filename == '':
+            index = 0
+        else:
+            index = int()
+            index = index + 1
 
     shutil.copyfile(file, util.get_work_dir() + TRAINING_FOLDER + str(index) + ".png" )
     trainingSet = {'company': receipt.company, "date": receipt.date, "total": receipt.total}
