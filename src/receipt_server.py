@@ -1,13 +1,12 @@
+import json
 import os
 import random
 import shutil
+import socket
 from collections import namedtuple
-import json
 from json.encoder import JSONEncoder
 
-import receipt_printer as printer
 import uvicorn
-from colors import bcolors
 from fastapi import FastAPI, Depends, UploadFile, File, Security, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
@@ -18,15 +17,17 @@ from receipt_parser_core.enhancer import process_receipt
 from starlette.responses import RedirectResponse
 from starlette.status import HTTP_403_FORBIDDEN
 from werkzeug.utils import secure_filename
+from zeroconf import ServiceInfo, Zeroconf
 
+import receipt_printer as printer
 import util as util
+from colors import bcolors
 
 # import sys
 # sys.path.insert(0, 'receipt-parser-neuronal/invoicenet/api/')
 # from predict_api import predict
 
-
-COOKIE_DOMAIN = "localtest.me"
+COOKIE_DOMAIN = "receipt.parser.de"
 ALLOWED_PORT = 8721
 ALLOWED_HOST = "0.0.0.0"
 
@@ -38,9 +39,13 @@ KEY_LOCATION = "cert/server.key"
 DATA_PREFIX = "data/img/"
 API_TOKEN_FILE = ".api_token"
 
+# ZERO_CONF
+ZERO_CONF_DESCRIPTION = "Receipt parser server._receipt-service._tcp.local."
+ZERO_CONF_SERVICE = "_receipt-service._tcp.local."
+
 # fallback key
 API_KEY = "44meJNNOAfuzT"
-PRINT_DEBUG_OUTPUT = False
+PRINT_DEBUG_OUTPUT = True
 
 
 class TupelEncoder(JSONEncoder):
@@ -212,7 +217,28 @@ async def route_logout_and_remove_cookie():
     response.delete_cookie(API_KEY_NAME, domain=COOKIE_DOMAIN)
     return response
 
+
 if __name__ == "__main__":
-    print("Current API token: " + bcolors.OKGREEN + API_KEY)
+    print("Current API token: " + bcolors.OKGREEN + API_KEY + bcolors.ENDC)
+
+    zeroconf = Zeroconf()
+    desc = {'version': '0.01'}
+    hostname = socket.gethostname()
+    ip = socket.gethostbyname(hostname)
+    print("Current IP address: " + bcolors.OKGREEN + ip + bcolors.ENDC)
+
+    addresses = [socket.inet_aton(ip)]
+    expected = {ip}
+    if socket.has_ipv6:
+        addresses.append(socket.inet_pton(socket.AF_INET6, '::1'))
+        expected.add('::1')
+    info = ServiceInfo(
+        ZERO_CONF_SERVICE, ZERO_CONF_DESCRIPTION, addresses=addresses, port=ALLOWED_PORT, properties=desc,
+    )
+
+    zeroconf.register_service(info)
     uvicorn.run("receipt_server:app", host="0.0.0.0", port=ALLOWED_PORT, log_level="info",
                 ssl_certfile=util.get_work_dir() + CERT_LOCATION, ssl_keyfile=util.get_work_dir() + KEY_LOCATION)
+
+    zeroconf.unregister_service(info)
+    zeroconf.close()
