@@ -45,7 +45,7 @@ ZERO_CONF_SERVICE = "_receipt-service._tcp.local."
 
 # fallback key
 API_KEY = "44meJNNOAfuzT"
-PRINT_DEBUG_OUTPUT = True
+PRINT_DEBUG_OUTPUT = False
 
 
 class TupelEncoder(JSONEncoder):
