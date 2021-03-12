@@ -222,6 +222,7 @@ if __name__ == "__main__":
     print("Current API token: " + bcolors.OKGREEN + API_KEY + bcolors.ENDC)
 
     zeroconf = Zeroconf()
+
     desc = {'version': '0.01'}
     hostname = socket.gethostname()
     ip = socket.gethostbyname(hostname)
@@ -237,8 +238,11 @@ if __name__ == "__main__":
     )
 
     zeroconf.register_service(info)
-    uvicorn.run("receipt_server:app", host="0.0.0.0", port=ALLOWED_PORT, log_level="info",
+    if read_config(util.get_work_dir() + "/config.yml").https:
+        uvicorn.run("receipt_server:app", host="0.0.0.0", port=ALLOWED_PORT, log_level="info",
                 ssl_certfile=util.get_work_dir() + CERT_LOCATION, ssl_keyfile=util.get_work_dir() + KEY_LOCATION)
+    else:
+        uvicorn.run("receipt_server:app", host="0.0.0.0", port=ALLOWED_PORT, log_level="info")
 
     zeroconf.unregister_service(info)
     zeroconf.close()
