@@ -1,7 +1,7 @@
 # Define the tesseract language
 #
 language: deu
-https: false
+https: true
 
 # Where the receipts are stored
 # Receipts should be simple text files
