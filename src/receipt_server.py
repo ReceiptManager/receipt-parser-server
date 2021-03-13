@@ -2,6 +2,7 @@ import json
 import os
 import random
 import shutil
+import subprocess
 import socket
 from collections import namedtuple
 from json.encoder import JSONEncoder
@@ -220,6 +221,10 @@ async def route_logout_and_remove_cookie():
 
 if __name__ == "__main__":
     print("Current API token: " + bcolors.OKGREEN + API_KEY + bcolors.ENDC)
+    print()
+    # os.system(["echo" , API_KEY , " | qrencode -t UTF8"])
+    c = subprocess.getoutput('echo ' + API_KEY + '| qrencode -t UTF8')
+    print(c + "\n")
 
     zeroconf = Zeroconf()
 
