@@ -11,9 +11,6 @@ def print_receipt_list(receipt):
     if not receipt.items:
         return None
 
-    for _ in map(print, receipt.items):
-        pass
-
 # Print full receipt
 def print_receipt(receipt):
     print("Company:    ", u.save_ret(receipt.market))

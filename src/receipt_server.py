@@ -1,11 +1,9 @@
 import json
 import os
-import random
 import shutil
-import subprocess
 import socket
+import subprocess
 from collections import namedtuple
-from json.encoder import JSONEncoder
 
 import uvicorn
 from fastapi import FastAPI, Depends, UploadFile, File, Security, HTTPException
@@ -24,10 +22,6 @@ import receipt_printer as printer
 import util as util
 from colors import bcolors
 
-# import sys
-# sys.path.insert(0, 'receipt-parser-neuronal/invoicenet/api/')
-# from predict_api import predict
-
 COOKIE_DOMAIN = "receipt.parser.de"
 ALLOWED_PORT = 8721
 ALLOWED_HOST = "0.0.0.0"
@@ -44,47 +38,8 @@ API_TOKEN_FILE = ".api_token"
 ZERO_CONF_DESCRIPTION = "Receipt parser server._receipt-service._tcp.local."
 ZERO_CONF_SERVICE = "_receipt-service._tcp.local."
 
-# fallback key
-API_KEY = "44meJNNOAfuzT"
+API_KEY = ""
 PRINT_DEBUG_OUTPUT = False
-
-
-class TupelEncoder(JSONEncoder):
-
-    def _iterencode(self, obj, markers=None):
-        if isinstance(obj, tuple) and hasattr(obj, '_asdict'):
-            gen = self._iterencode_dict(obj._asdict(), markers)
-        else:
-            gen = JSONEncoder._iterencode(self, obj, markers)
-        for chunk in gen:
-            yield chunk
-
-
-def generate_api_token():
-    random_string = ''
-    for _ in range(10):
-        random_integer = random.randint(97, 97 + 26 - 1)
-        flip_bit = random.randint(0, 1)
-        random_integer = random_integer - 32 if flip_bit == 1 else random_integer
-        random_string += (chr(random_integer))
-
-    tokenFile = open(API_TOKEN_FILE, "w")
-    tokenFile.write(random_string)
-    tokenFile.close()
-
-    return random_string
-
-
-if not os.path.isfile(API_TOKEN_FILE):
-    API_KEY = generate_api_token()
-
-else:
-    with open(API_TOKEN_FILE) as f:
-        line = f.readline().strip()
-        if not line:
-            API_KEY = generate_api_token()
-        else:
-            API_KEY = line
 
 API_KEY_NAME = "access_token"
 api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
@@ -122,7 +77,6 @@ class Receipt(BaseModel):
     total: str
 
 
-
 # Prepare training dataset for neuronal parser
 # If an photo is submitted, upload the corresponding json file
 @app.post("/api/training", tags=["api"])
@@ -143,11 +97,13 @@ async def get_open_api_endpoint(receipt: Receipt,
         else:
             index = int(filename) + 1
 
-    shutil.copyfile(file, util.get_work_dir() + TRAINING_FOLDER + str(index) + ".png" )
-    trainingSet = {'company': receipt.company, "date": receipt.date, "total": receipt.total}
+    shutil.copyfile(file, util.get_work_dir() + TRAINING_FOLDER + str(index) + ".png")
+    training_set = {'company': receipt.company, "date": receipt.date, "total": receipt.total}
 
     with open(TRAINING_FOLDER + str(index) + '.json', 'w+') as out:
-        json.dump(trainingSet, out)
+        json.dump(training_set, out)
+
+    return JSONResponse(content="success")
 
 
 # Current image api
@@ -222,7 +178,7 @@ async def route_logout_and_remove_cookie():
 if __name__ == "__main__":
     print("Current API token: " + bcolors.OKGREEN + API_KEY + bcolors.ENDC)
     print()
-    # os.system(["echo" , API_KEY , " | qrencode -t UTF8"])
+
     c = subprocess.getoutput('echo ' + API_KEY + '| qrencode -t UTF8')
     print(c + "\n")
 
