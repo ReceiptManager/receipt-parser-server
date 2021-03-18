@@ -21,6 +21,7 @@ from zeroconf import ServiceInfo, Zeroconf
 import receipt_printer as printer
 import util as util
 from colors import bcolors
+from fastapi.middleware.cors import CORSMiddleware
 
 COOKIE_DOMAIN = "receipt.parser.de"
 ALLOWED_PORT = 8721
@@ -82,6 +83,23 @@ api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+origins = [
+    "https://0.0.0.0:8721",
+    "https://0.0.0.0",
+    "http://0.0.0.0",
+    "http://0.0.0.0:8721",
+    "http://receipt-parser.com",
+    "https://receipt-parser.com",
+    "https://receipt-parser.com:8721",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Prepare training dataset for neuronal parser
 # If an photo is submitted, upload the corresponding json file
