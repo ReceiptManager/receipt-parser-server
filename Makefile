@@ -19,4 +19,4 @@ docker-push:
 
 .PHONY: docker-run
 docker-run:
-	docker run -v `pwd`/data/img:/app/data/img monolidth/receipt-parser-server
+	docker run -t -i -v `pwd`/data/img:/app/data/img monolidth/receipt-parser-server
