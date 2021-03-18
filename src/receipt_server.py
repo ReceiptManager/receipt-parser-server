@@ -38,7 +38,6 @@ API_TOKEN_FILE = ".api_token"
 ZERO_CONF_DESCRIPTION = "Receipt parser server._receipt-service._tcp.local."
 ZERO_CONF_SERVICE = "_receipt-service._tcp.local."
 
-API_KEY = ""
 PRINT_DEBUG_OUTPUT = False
 
 API_KEY_NAME = "access_token"
@@ -46,6 +45,21 @@ api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
 
+if not os.path.isfile(API_TOKEN_FILE):
+    API_KEY = util.generate_api_token()
+
+else:
+    with open(API_TOKEN_FILE) as f:
+        line = f.readline().strip()
+        if not line:
+            API_KEY = util.generate_api_token()
+        else:
+            API_KEY = line
+
+class Receipt(BaseModel):
+    company: str
+    date: str
+    total: str
 
 async def get_api_key(
         api_query: str = Security(api_key_query),
@@ -63,19 +77,11 @@ async def get_api_key(
             status_code=HTTP_403_FORBIDDEN, detail="Could not validate credentials"
         )
 
-
 # Set header and cookies
 api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
-
-
-class Receipt(BaseModel):
-    company: str
-    date: str
-    total: str
-
 
 # Prepare training dataset for neuronal parser
 # If an photo is submitted, upload the corresponding json file

@@ -72,15 +72,3 @@ def generate_api_token():
     token_file.close()
 
     return random_string
-
-
-if not os.path.isfile(API_TOKEN_FILE):
-    API_KEY = generate_api_token()
-
-else:
-    with open(API_TOKEN_FILE) as f:
-        line = f.readline().strip()
-        if not line:
-            API_KEY = generate_api_token()
-        else:
-            API_KEY = line
