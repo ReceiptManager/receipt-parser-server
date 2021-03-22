@@ -84,11 +84,6 @@ api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 origins = [
-    "https://0.0.0.0:8721",
-    "https://0.0.0.0",
-    "http://0.0.0.0",
-    "http://0.0.0.0:8721",
-    "http://receipt-parser.com",
     "https://receipt-parser.com",
     "https://receipt-parser.com:8721",
 ]
