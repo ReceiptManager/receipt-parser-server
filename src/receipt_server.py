@@ -3,6 +3,7 @@ import os
 import shutil
 import socket
 import subprocess
+import random
 from collections import namedtuple
 
 import uvicorn
@@ -46,16 +47,16 @@ api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
 
-if not os.path.isfile(API_TOKEN_FILE):
-    API_KEY = util.generate_api_token()
-
-else:
+if os.path.isfile(API_TOKEN_FILE):
     with open(API_TOKEN_FILE) as f:
         line = f.readline().strip()
         if not line:
-            API_KEY = util.generate_api_token()
+           raise RuntimeError("can't find valid API token")
         else:
             API_KEY = line
+
+else:
+    raise RuntimeError("API token does not exist.")
 
 class Receipt(BaseModel):
     company: str
