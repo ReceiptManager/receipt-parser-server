@@ -3,6 +3,7 @@ import os
 import shutil
 import socket
 import subprocess
+import random
 from collections import namedtuple
 
 import uvicorn
@@ -46,14 +47,28 @@ api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
 
+def generate_api_token():
+    random_string = ''
+    for _ in range(10):
+        random_integer = random.randint(97, 97 + 26 - 1)
+        flip_bit = random.randint(0, 1)
+        random_integer = random_integer - 32 if flip_bit == 1 else random_integer
+        random_string += (chr(random_integer))
+
+    token_file = open(API_TOKEN_FILE, "w")
+    token_file.write(random_string)
+    token_file.close()
+
+    return random_string
+
 if not os.path.isfile(API_TOKEN_FILE):
-    API_KEY = util.generate_api_token()
+    API_KEY = generate_api_token()
 
 else:
     with open(API_TOKEN_FILE) as f:
         line = f.readline().strip()
         if not line:
-            API_KEY = util.generate_api_token()
+            API_KEY = generate_api_token()
         else:
             API_KEY = line
 
