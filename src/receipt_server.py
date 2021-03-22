@@ -3,7 +3,6 @@ import os
 import shutil
 import socket
 import subprocess
-import random
 from collections import namedtuple
 
 import uvicorn
