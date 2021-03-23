@@ -333,5 +333,5 @@ tags
 
 # End of https://www.toptal.com/developers/gitignore/api/pycharm,pycharm+all,python,vim
 
-.api_token
+data/.api_token
 receipt-parser-neuronal

@@ -33,7 +33,7 @@ TRAINING_FOLDER = 'data/training/'
 CERT_LOCATION = "cert/server.crt"
 KEY_LOCATION = "cert/server.key"
 DATA_PREFIX = "data/img/"
-API_TOKEN_FILE = ".api_token"
+API_TOKEN_FILE = "data/.api_token"
 
 # ZERO_CONF
 ZERO_CONF_DESCRIPTION = "Receipt parser server._receipt-service._tcp.local."
@@ -45,6 +45,8 @@ API_KEY_NAME = "access_token"
 api_key_query = APIKeyQuery(name=API_KEY_NAME, auto_error=False)
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 api_key_cookie = APIKeyCookie(name=API_KEY_NAME, auto_error=False)
+
+config = read_config(util.get_config_dir() + "/config.yml")
 
 if os.path.isfile(API_TOKEN_FILE):
     with open(API_TOKEN_FILE) as f:
@@ -166,7 +168,6 @@ async def get_open_api_endpoint(
             return JSONResponse(content=json_compatible_item_data)
 
         printer.info("Parsing image")
-        config = read_config(util.get_work_dir() + "/config.yml")
         receipt = process_receipt(config, filename, rotate=rotate_image, grayscale=grayscale_image,
                                   gaussian_blur=gaussian_blur)
 
@@ -218,9 +219,9 @@ if __name__ == "__main__":
     )
 
     zeroconf.register_service(info)
-    if read_config(util.get_work_dir() + "/config.yml").https:
+    if config.https:
         uvicorn.run("receipt_server:app", host="0.0.0.0", port=ALLOWED_PORT, log_level="info",
-                ssl_certfile=util.get_work_dir() + CERT_LOCATION, ssl_keyfile=util.get_work_dir() + KEY_LOCATION)
+                    ssl_certfile=util.get_work_dir() + CERT_LOCATION, ssl_keyfile=util.get_work_dir() + KEY_LOCATION)
     else:
         uvicorn.run("receipt_server:app", host="0.0.0.0", port=ALLOWED_PORT, log_level="info")
 

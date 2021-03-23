@@ -20,4 +20,4 @@ docker-push:
 
 .PHONY: docker-run
 docker-run:
-	bash launcher.sh
+	bash util/launcher.sh

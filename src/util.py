@@ -3,8 +3,6 @@ from datetime import datetime, date
 # Allowed image extensions
 from json.encoder import JSONEncoder
 
-from receipt_server import API_TOKEN_FILE
-
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
 
 
@@ -14,12 +12,23 @@ def allowed_file(filename):
 
 
 # Get the current work dir
-def get_work_dir():
-    work_dir = os.getcwd()
+def get_config_dir():
+    work_dir = os.environ.get('RECEIPT_PARSER_CONFIG_DIR')
+
+    if work_dir:
+        return work_dir
+    else:
+        work_dir = os.getcwd()
 
     if "src" in work_dir: work_dir = work_dir.replace("src", "")
     if not work_dir.endswith("/"): work_dir = work_dir + "/"
 
+    return work_dir
+
+def get_work_dir():
+    work_dir = os.getcwd()
+    if "src" in work_dir: work_dir = work_dir.replace("src", "")
+    if not work_dir.endswith("/"): work_dir = work_dir + "/"
     return work_dir
 
 # Save return. Convenient function to return not null
