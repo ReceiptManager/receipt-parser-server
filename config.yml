@@ -1,7 +1,11 @@
 # Define the tesseract language
-#
 language: deu
+
+# Enable https
 https: true
+
+# Enable zeroconf
+zeroconf: false
 
 # Where the receipts are stored
 # Receipts should be simple text files
@@ -51,7 +55,6 @@ markets:
   Migros:
      - genossenschaft migros
 
-# Sum keys roughly ordered by likelyhood.
 sum_keys:
   - summe
   - gesamtbetrag

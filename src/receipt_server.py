@@ -194,14 +194,7 @@ async def route_logout_and_remove_cookie():
     response.delete_cookie(API_KEY_NAME, domain=COOKIE_DOMAIN)
     return response
 
-
-if __name__ == "__main__":
-    print("Current API token: " + bcolors.OKGREEN + API_KEY + bcolors.ENDC)
-    print()
-
-    c = subprocess.getoutput('echo ' + API_KEY + '| qrencode -t UTF8')
-    print(c + "\n")
-
+def prepare_zeroconf():
     zeroconf = Zeroconf()
 
     desc = {'version': '0.01'}
@@ -219,11 +212,26 @@ if __name__ == "__main__":
     )
 
     zeroconf.register_service(info)
+    return (zeroconf, info)
+
+if __name__ == "__main__":
+    print("Current API token: " + bcolors.OKGREEN + API_KEY + bcolors.ENDC)
+    print()
+
+    c = subprocess.getoutput('echo ' + API_KEY + '| qrencode -t UTF8')
+    print(c + "\n")
+
+    zeroconf = None
+    info = None
+    if config.zeroconf:
+        zeroconf,info = prepare_zeroconf()
+
     if config.https:
         uvicorn.run("receipt_server:app", host="0.0.0.0", port=ALLOWED_PORT, log_level="info",
                     ssl_certfile=util.get_work_dir() + CERT_LOCATION, ssl_keyfile=util.get_work_dir() + KEY_LOCATION)
     else:
         uvicorn.run("receipt_server:app", host="0.0.0.0", port=ALLOWED_PORT, log_level="info")
 
-    zeroconf.unregister_service(info)
-    zeroconf.close()
+    if config.zeroconf:
+        zeroconf.unregister_service(info)
+        zeroconf.close()
