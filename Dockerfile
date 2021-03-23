@@ -13,6 +13,6 @@ RUN mkdir -p /app/data/tmp
 RUN mkdir -p /app/data/training
 RUN mkdir -p /app/data/txt
 
-RUN pip install -r requirements.txt --verbose
-RUN make generate_cert
+RUN pip install -r requirements.txt
+CMD make generate_cert
 CMD ["make", "serve"]
