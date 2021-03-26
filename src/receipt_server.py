@@ -8,6 +8,7 @@ from collections import namedtuple
 import uvicorn
 from fastapi import FastAPI, Depends, UploadFile, File, Security, HTTPException
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security.api_key import APIKeyQuery, APIKeyCookie, APIKeyHeader, APIKey
 from pydantic import BaseModel
@@ -21,7 +22,6 @@ from zeroconf import ServiceInfo, Zeroconf
 import receipt_printer as printer
 import util as util
 from colors import bcolors
-from fastapi.middleware.cors import CORSMiddleware
 
 COOKIE_DOMAIN = "receipt.parser.de"
 ALLOWED_PORT = 8721
@@ -103,19 +103,21 @@ app.add_middleware(
 @app.post("/api/training", tags=["api"])
 async def get_open_api_endpoint(receipt: Receipt,
                                 api_key: APIKey = Depends(get_api_key)):
+    if not receipt:
+        raise HTTPException(
+            status_code=415, detail="Invalid receipt send"
+        )
+
     search_dir = util.get_work_dir() + TMP_FOLDER
     file = util.get_last_modified_file(search_dir)
 
     search_dir = util.get_work_dir() + TRAINING_FOLDER
     last = util.get_last_modified_file(search_dir)
 
-    if not last:
-        index = 0
-    else:
+    index = 0
+    if last:
         filename = os.path.basename(last).split(".")[0]
-        if not filename or filename == '':
-            index = 0
-        else:
+        if filename and filename == '':
             index = int(filename) + 1
 
     shutil.copyfile(file, util.get_work_dir() + TRAINING_FOLDER + str(index) + ".png")
@@ -139,7 +141,7 @@ async def get_open_api_endpoint(
     if file.filename == "":
         printer.error("No filename exist")
         raise HTTPException(
-            status_code=500, detail="Invalid image send"
+            status_code=415, detail="Invalid image send"
         )
 
     if file and util.allowed_file(file.filename):
@@ -184,7 +186,7 @@ async def get_open_api_endpoint(
 
     else:
         raise HTTPException(
-            status_code=500, detail="Invalid image send"
+            status_code=415, detail="Invalid image send"
         )
 
 
