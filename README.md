@@ -5,12 +5,12 @@ All the needed info about how to "install | use | enjoy" `receipt-parser-server`
 ---
 
 - *I. Content & Features*
-  - [Home](https://github.com/ReceiptManager/receipt-parser-server/wiki)
+  - [Home](https://receipt-parser-server.readthedocs.io/en/master/)
   
 
 - *II. Getting started*
-  - [Recommended installation guide](https://github.com/ReceiptManager/receipt-parser-server/wiki/Install-using-pip)
-  - [Docker installation guide](https://github.com/ReceiptManager/receipt-parser-server/wiki/Install-using-docker)
+  - [Recommended installation guide](https://receipt-parser-server.readthedocs.io/en/master/installation.html#developer-installation-guide)
+  - [Docker installation guide](https://receipt-parser-server.readthedocs.io/en/master/installation.html#)
   
 
 ### Questions
