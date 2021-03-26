@@ -1,6 +1,6 @@
 # ReceiptManger server
 
-All the needed info about how to "install | use | enjoy" `receipt-parser-server` is present at your [wiki](https://github.com/ReceiptManager/receipt-parser-server/wiki).
+All the needed info about how to "install | use | enjoy" `receipt-parser-server` is present at [readTheDocs](https://receipt-parser-server.readthedocs.io/en/master/)
 
 ---
 
