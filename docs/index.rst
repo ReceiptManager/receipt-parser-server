@@ -2,7 +2,7 @@
 
 Welcome to the Receipt Parser Server documentation!
 ======================================================
-Receipt parser server is a modular, lightway server to parse receipts.
+Receipt parser server is a modular, minimal server to parse receipts.
 
 
 .. toctree::

@@ -106,7 +106,7 @@ Now, you are ready to run the Receipt Parser Server.
 Verify installation
 =================================================
 
-If you run the Docker image. The output should like simular to:
+If you run the Docker image. The output should like similar to:
 
 .. code-block:: text
 
