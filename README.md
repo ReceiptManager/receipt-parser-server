@@ -1,6 +1,6 @@
 # ReceiptManger server
 
-All the needed info about how to "install | use | enjoy" `receipt-parser-server` is present at [readTheDocs](https://receipt-parser-server.readthedocs.io/en/master/)
+All the needed info about how to "install | use | enjoy" `receipt-parser-server` is present [here](https://receipt-parser-server.readthedocs.io/en/master/).
 
 ---
 
@@ -13,6 +13,10 @@ All the needed info about how to "install | use | enjoy" `receipt-parser-server`
   - [Docker installation guide](https://receipt-parser-server.readthedocs.io/en/master/installation.html#)
   
 
+- *III. Api documentation*
+  - [Upload API](https://receipt-parser-server.readthedocs.io/en/master/api.html)
+  - [Training API](https://receipt-parser-server.readthedocs.io/en/master/api.html#training-api)
+
 ### Questions
 If there any questions, bug or enhancements, please raise an issue or read my medium article about this. You can
-find the article [here](https://medium.com/swlh/fuzzy-receipt-parser-and-manager-cb614e4eaa6a)
+find the article [here](https://medium.com/swlh/fuzzy-receipt-parser-and-manager-cb614e4eaa6a).
