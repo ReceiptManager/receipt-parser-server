@@ -31,8 +31,15 @@ Take a look at the cURL example.
 Return Code
 """""""""""""""
 
-The server return ``200`` if success or ``500`` if the given image is invalid or the
-API token is invalid.
++-------------+---------------------+
+| Return code | Event               |
++-------------+---------------------+
+| 200         | request is valid    |
++-------------+---------------------+
+| 403         | APITOKEN is invalid |
++-------------+---------------------+
+| 415         | image is invalid    |
++-------------+---------------------+
 
 Curl example
 """""""""""""""
@@ -68,8 +75,15 @@ The entrypoint of the upload api is ``api/training``.
 Return Code
 """""""""""""""
 
-The server return ``200`` if success or ``500`` if the given receipt or the
-API token is invalid.
++-------------+---------------------+
+| Return code | Event               |
++-------------+---------------------+
+| 200         | request is valid    |
++-------------+---------------------+
+| 403         | APITOKEN is invalid |
++-------------+---------------------+
+| 415         | image is invalid    |
++-------------+---------------------+
 
 Parameter
 """"""""""""
