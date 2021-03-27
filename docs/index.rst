@@ -15,3 +15,8 @@ Receipt parser server is a modular, minimal server to parse receipts.
    :caption: Installation
    
    installation
+
+.. toctree::
+   :caption: Configuration
+
+   config
