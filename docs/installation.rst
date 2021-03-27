@@ -1,7 +1,6 @@
 Docker installation guide
 =================================================
-The receipt-parser-server image gets built automatically using the Docker hub. You can find the latest image at docker hub.
-
+The receipt-parser-server image gets built automatically using the `Docker Hub <https://hub.docker.com/r/monolidth/receipt-parser>`_.
 The installation is very simple. First pull the image from Docker hub.
 
 .. code-block:: bash
@@ -62,6 +61,7 @@ Please notice that you install following packages with your favorite package man
     * tesseract-ocr-all
     * libgl1-mesa-glx
     * libmagickwand-dev
+    * qrencode
 
 .. code-block:: bash
 
@@ -115,3 +115,9 @@ If you run the Docker image. The output should like similar to:
     INFO:     Waiting for application startup.
     INFO:     Application startup complete.
     INFO:     Uvicorn running on https://0.0.0.0:8721 (Press CTRL+C to quit)
+
+The API token in printed on the screen. Additionally, you can scan the QR code.
+
+.. code-block:: text
+
+    Current API token: XXXXXXXX
