@@ -67,6 +67,15 @@ Please notice that you install following packages with your favorite package man
 
     apt-get install python python-pip libmagickwand-dev tesseract-ocr-all libgl1-mesa-glx libmagickwand-dev
 
+
+Install python dependencies
+""""""""""""""""""""""""""""""
+Now, install all python dependencies using `pip` the following
+
+.. code-block:: bash
+
+    pip install -r requirements.txt
+
 Generate SSL certificates
 """""""""""""""""""""""""""""""
 
