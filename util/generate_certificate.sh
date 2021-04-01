@@ -53,9 +53,14 @@ submit_password() {
 }
 
 main() {
-  submit_password
-  generate_root_ca
-  create_server_certificate
+  if [ ! -f ".private_key" ];then
+    submit_password
+    generate_root_ca
+    create_server_certificate
+  else
+    echo -e "\t \033[32m Certificate is already present. \033[0m"
+    echo -e "\t \033[32m Generation is not required \033[0m"
+  fi
 }
 
 main

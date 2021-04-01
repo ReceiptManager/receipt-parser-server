@@ -7,6 +7,7 @@ generate_token:
 	bash util/generate_token.sh
 
 serve:
+	bash util/generate_certificate.sh
 	bash util/generate_token.sh
 	python src/receipt_server.py
 
