@@ -94,7 +94,7 @@ The output looks horrible but you might noticed that the store name
 is Rewe but the output is: ``EWE Rene Müller 0HGCITY``. Now, add the following market
 in the ``config.yml``.
 
-.. code-block:: bash
+.. code-block:: text
 
     REWE:
      - ewe
@@ -111,7 +111,7 @@ Forward config
 If you use the Docker image, you can forward the configuration file ``config.yml``.
 If the ``config.yml`` is in your current directory you can add the following flag
 
-.. code-block:: bash
+.. code-block:: text
 
     -v "$(pwd):/config" -e RECEIPT_PARSER_CONFIG_DIR="/config"
 
@@ -123,14 +123,14 @@ Forward IP
 """"""""""""""""
 Additionally, you can forward the Docker IP using:
 
-.. code-block:: bash
+.. code-block:: text
 
     -p $IP:8721:8721
 
 Example config
 ===============
 
-.. code-block:: bash
+.. code-block:: text
 
         # Define the tesseract language
     language: deu
@@ -181,7 +181,7 @@ Example config
       Getraenke:
         - Getraenke Tempel
       Tanken:
-         - shell
+         - text
          - esso station
          - aral
          - total tankstelle
@@ -216,3 +216,84 @@ Example config
 
     date_format: '((\d{2}\.\d{2}\.\d{2,4})|(\d{2,4}\/\d{2}\/\d{2})|(\d{2}\/\d{2}\/\d{4}))'
 
+Reverse proxy
+=================
+
+To use a reverse proxy, you need to disable `HTTPS` in the receipt parser config.
+Change this line
+
+.. code-block:: text
+
+     # Enable https
+     https: true
+
+to
+
+.. code-block:: text
+
+     # Disable https
+     https: false
+
+After, use this example NGINX configuration and replace `DOMAIN` with your domain and `CERT PATH`
+with your SSL certificate path.
+
+.. code-block:: text
+
+    server {
+            listen 443 ssl http2;
+            listen [::]:443 ssl http2;
+            server_name [DOMAIN] [DOMAIN];
+
+            # optional
+            access_log /var/log/nginx/[DOMAIN].access.log;
+            error_log /var/log/nginx/[DOMAIN].log;
+
+            client_max_body_size 0;
+            underscores_in_headers on;
+
+            ssl on;
+            ssl_certificate [CERT PATH]; # managed by Certbot
+            ssl_certificate_key [CERT PATH]; # managed by Certbot
+
+            ssl_stapling on;
+            ssl_stapling_verify on;
+            include /etc/nginx/snippets/ssl.conf;
+
+
+            location / {
+                    proxy_headers_hash_max_size 512;
+                    proxy_headers_hash_bucket_size 64;
+                    proxy_set_header Host $host;
+                    proxy_set_header X-Forwarded-Proto $scheme;
+                    proxy_set_header X-Real-IP $remote_addr;
+                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                    add_header Strict-Transport-Security "max-age=15768000; includeSubDomains;";
+                    add_header Front-End-Https on;
+
+                    # whatever the IP of your receipt server server is
+                    proxy_pass http://localhost:8721;
+            }
+    }
+
+    server {
+            listen 80;
+            listen [::]:80;
+            server_name [DOMAIN] [DOMAIN];
+            access_log /var/log/nginx/[DOMAIN].access.log;
+            error_log /var/log/nginx/[DOMAIN].80.error.log;
+            root /usr/share/nginx/html/[DOMAIN]/;
+
+            location ^~ /.well-known/acme-challenge/ {
+                allow all;
+                default_type "text/plain";
+            }
+            location ^~ /.well-known/pki-validation/ {
+                allow all;
+                default_type "text/plain";
+            }
+            location / {
+                return 403;
+            }
+    }
+
+Don't forget to reload your NGINX server, after.
