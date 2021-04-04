@@ -24,6 +24,7 @@ The launcher script does take care of various things e.g.
 .. code-block:: bash
 
     wget https://raw.githubusercontent.com/ReceiptManager/receipt-parser-server/master/util/launcher.sh
+    wget https://raw.githubusercontent.com/ReceiptManager/receipt-parser-server/master/config.yml
     bash launcher.sh
 
 
