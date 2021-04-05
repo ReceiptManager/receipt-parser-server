@@ -8,7 +8,7 @@ The installation is very simple. First pull the image from Docker hub.
     docker pull monolidth/receipt-parser:latest
    
 
-Recommend
+Recommended
 """""""""""""""
 
 The launcher script does take care of various things e.g.
