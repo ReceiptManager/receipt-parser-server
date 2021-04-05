@@ -1,4 +1,4 @@
-# ReceiptManger server
+# ReceiptManager server
 
 All the needed info about how to "install | use | enjoy" `receipt-parser-server` is present [here](https://receipt-parser-server.readthedocs.io/en/master/).
 
