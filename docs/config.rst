@@ -44,7 +44,7 @@ Following keys need to be defined.
 
 Add new market names
 """""""""""""""""""""
-You can add new market entry below the ``makets`` key e.g.
+You can add new market entry below the ``markets`` key e.g.
 
 .. code-block:: bash
 
