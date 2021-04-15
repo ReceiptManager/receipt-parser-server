@@ -2,7 +2,7 @@ starlette==0.13.6
 Werkzeug==1.0.1
 uvicorn[standard]==0.13.4
 fastapi==0.63.0
-receipt_parser_core==0.1.9
+receipt_parser_core==0.2.1
 python-multipart==0.0.5
 zeroconf== 0.29.0
 websockets==8.1
