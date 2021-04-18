@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.7
 FROM tensorflow/tensorflow:nightly-py3
 
 RUN apt-get update -y && apt-get upgrade -y 
