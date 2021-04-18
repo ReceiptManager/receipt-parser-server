@@ -1,15 +1,12 @@
 # Define the tesseract language
+#
 language: deu
-
-# Enable https
-https: true
-
-# Enable zeroconf
-zeroconf: false
 
 # Where the receipts are stored
 # Receipts should be simple text files
 receipts_path: "data/txt"
+
+results_as_json: false
 
 # Market names roughly ordered by likelihood.
 # Can contain market locations for fuzzy parsing
@@ -21,6 +18,7 @@ markets:
      - Delhaize
      - delhaize
   Penny:
+     - penny markt
      - penny
      - p e n n y
      - m a r k t gmbh
@@ -54,20 +52,25 @@ markets:
      - RK Tankstellen
   Migros:
      - genossenschaft migros
+  Metro:
+     - vetro
+     - metro
 
+# Sum keys roughly ordered by likelyhood.
 sum_keys:
   - summe
-    - gesamtbetrag
-    - gesantbetrag
-    - gesamt
-    - total
-    - sum
-    - zwischensumme
-    - bar
-    - te betalen
-    - rockgeld
-    - rusckgeld
-    - rückgeld
+  - summe eur
+  - gesamtbetrag
+  - gesantbetrag
+  - gesamt
+  - total
+  - sum
+  - zwischensumme
+  - bar
+  - te betalen
+  - rockgeld
+  - rusckgeld
+  - rückgeld
 
 ignore_keys:
   - mwst
@@ -75,9 +78,10 @@ ignore_keys:
   - stkx
   - stk
 
-
 sum_format: '\d+(\.\s?|,\s?|[^a-zA-Z\d])\d{2}'
 
-item_format: '([a-zA-Z].+)\s(-|)(\d,\d\d)\s'
+item_format: '([a-zA-Z].+)\s(-|)((\d|\d{2}),(\d{2}|\d{3}))\s'
+item_format_metro: '[0-9]\s(.*?)\d.()((\d|\d{2})(\,|\.)\d{2})\s([A|a]|[B|b])'
 
+# Matches dates like 19.08.15 and 19.08.2015
 date_format: '((\d{2}\.\d{2}\.\d{2,4})|(\d{2,4}\/\d{2}\/\d{2})|(\d{2}\/\d{2}\/\d{4}))'
