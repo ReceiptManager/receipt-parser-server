@@ -7,6 +7,8 @@ https: true
 # Enable zeroconf
 zeroconf: false
 
+results_as_json: false
+
 # Where the receipts are stored
 # Receipts should be simple text files
 receipts_path: "data/txt"
@@ -14,60 +16,76 @@ receipts_path: "data/txt"
 # Market names roughly ordered by likelihood.
 # Can contain market locations for fuzzy parsing
 markets:
+  
   Colruyt:
-     - colruyt
-     - Colruyt
+    - colruyt
+    - Colruyt
+  
   Delhaize:
-     - Delhaize
-     - delhaize
+    - Delhaize
+    - delhaize
+  
   Penny:
-     - penny
-     - p e n n y
-     - m a r k t gmbh
+    - penny markt
+    - penny
+    - p e n n y
+    - m a r k t gmbh
+  
   REWE:
-     - rewe
+    - rewe
+  
   Real:
-     - real
+    - real
+ 
   Netto:
-     - netto-online
+    - netto-online
+  
   Kaiser's:
-     - kaiser
-     - kaiserswerther straße 270
+    - kaiser
+    - kaiserswerther straße 270
+  
   Aldi:
-     - aldi
-     - friedrichstr 128—133
+    - aldi
+    - friedrichstr 128—133
+  
   Lidl:
-     - lidl
+    - lidl
+  
   Edeka:
     - edeka
+  
   Drogerie:
-     - drogerie
+    - drogerie
+  
   Kodi:
-     - kodi
+    - kodi
+  
   Getraenke:
     - Getraenke Tempel
+  
   Tanken:
-     - shell
-     - esso station
-     - aral
-     - total tankstelle
-     - RK Tankstellen
+    - shell
+    - esso station
+    - aral
+    - total tankstelle
+    - RK Tankstellen
+  
   Migros:
-     - genossenschaft migros
+    - genossenschaft migros
 
 sum_keys:
   - summe
-    - gesamtbetrag
-    - gesantbetrag
-    - gesamt
-    - total
-    - sum
-    - zwischensumme
-    - bar
-    - te betalen
-    - rockgeld
-    - rusckgeld
-    - rückgeld
+  - gesamtbetrag
+  - gesantbetrag
+  - gesamt
+  - total
+  - sum
+  - zwischensumme
+  - bar
+  - te betalen
+  - rockgeld
+  - rusckgeld
+  - rückgeld
 
 ignore_keys:
   - mwst
@@ -75,9 +93,9 @@ ignore_keys:
   - stkx
   - stk
 
-
 sum_format: '\d+(\.\s?|,\s?|[^a-zA-Z\d])\d{2}'
 
-item_format: '([a-zA-Z].+)\s(-|)(\d,\d\d)\s'
+item_format: '([a-zA-Z].+)\s(-|)((\d|\d{2}),(\d{2}|\d{3}))\s'
+item_format_metro: '[0-9]\s(.*?)\d.()((\d|\d{2})(\,|\.)\d{2})\s([A|a]|[B|b])'
 
 date_format: '((\d{2}\.\d{2}\.\d{2,4})|(\d{2,4}\/\d{2}\/\d{2})|(\d{2}\/\d{2}\/\d{4}))'
