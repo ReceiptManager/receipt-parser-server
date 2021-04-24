@@ -1,8 +1,11 @@
-# ReceiptManager server
+<p align="center">
+  <img src="https://i.imgur.com/QjuZBrZ.png">
+</p>
 
-All the needed info about how to "install | use | enjoy" `receipt-parser-server` is present [here](https://receipt-parser-server.readthedocs.io/en/master/).
+# Receipt Parser Server [![Gitter](https://badges.gitter.im/receipt-parser-manager/community.svg)](https://gitter.im/receipt-parser-manager/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
----
+All the needed info about how to  use the `receipt-parser-server` is present at your [wiki](https://receipt-parser-server.readthedocs.io/en/master/).
+* :star: We appreciate your star, it helps!
 
 - *I. Content & Features*
   - [Home](https://receipt-parser-server.readthedocs.io/en/master/)
