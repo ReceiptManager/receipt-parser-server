@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.imgur.com/QjuZBrZ.png">
+  <img src="https://i.imgur.com/0VMRCfp.png">
 </p>
 
 # Receipt Parser Server [![Gitter](https://badges.gitter.im/receipt-parser-manager/community.svg)](https://gitter.im/receipt-parser-manager/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
