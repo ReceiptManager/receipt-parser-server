@@ -4,5 +4,5 @@ uvicorn[standard]==0.13.4
 fastapi==0.63.0
 receipt_parser_core==0.2.4
 python-multipart==0.0.5
-zeroconf== 0.29.0
+zeroconf== 0.30.0
 websockets==8.1
