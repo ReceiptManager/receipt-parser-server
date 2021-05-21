@@ -5,4 +5,4 @@ fastapi==0.64.0
 receipt_parser_core==0.2.4
 python-multipart==0.0.5
 zeroconf== 0.31.0
-websockets==8.1
+websockets==9.0.2
