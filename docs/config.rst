@@ -10,8 +10,6 @@ Following keys need to be defined.
 +---------------+-------------------------------------------------+-------------------------------------+
 | https         | true                                            | Enable HTTPS                        |
 +---------------+-------------------------------------------------+-------------------------------------+
-| zeroconf      | false                                           | Enable zeroconf service             |
-+---------------+-------------------------------------------------+-------------------------------------+
 | receipts_path | "data/txt"                                      | Path where receipts are stored      |
 +---------------+-------------------------------------------------+-------------------------------------+
 | markets       | markets:                                        | Markets name                        |
@@ -137,9 +135,6 @@ Example config
 
     # Enable https
     https: true
-
-    # Enable zeroconf
-    zeroconf: false
 
     # Where the receipts are stored
     # Receipts should be simple text files

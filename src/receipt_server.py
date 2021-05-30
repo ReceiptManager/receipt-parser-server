@@ -17,7 +17,6 @@ from receipt_parser_core.enhancer import process_receipt
 from starlette.responses import RedirectResponse
 from starlette.status import HTTP_403_FORBIDDEN
 from werkzeug.utils import secure_filename
-from zeroconf import ServiceInfo, Zeroconf
 
 import receipt_printer as printer
 import util as util
@@ -196,26 +195,6 @@ async def route_logout_and_remove_cookie():
     response.delete_cookie(API_KEY_NAME, domain=COOKIE_DOMAIN)
     return response
 
-def prepare_zeroconf():
-    zeroconf = Zeroconf()
-
-    desc = {'version': '0.01'}
-    hostname = socket.gethostname()
-    ip = socket.gethostbyname(hostname)
-    print("Current IP address: " + bcolors.OKGREEN + ip + bcolors.ENDC)
-
-    addresses = [socket.inet_aton(ip)]
-    expected = {ip}
-    if socket.has_ipv6:
-        addresses.append(socket.inet_pton(socket.AF_INET6, '::1'))
-        expected.add('::1')
-    info = ServiceInfo(
-        ZERO_CONF_SERVICE, ZERO_CONF_DESCRIPTION, addresses=addresses, port=ALLOWED_PORT, properties=desc,
-    )
-
-    zeroconf.register_service(info)
-    return (zeroconf, info)
-
 if __name__ == "__main__":
     print("Current API token: " + bcolors.OKGREEN + API_KEY + bcolors.ENDC)
     print()
@@ -223,17 +202,8 @@ if __name__ == "__main__":
     c = subprocess.getoutput('echo ' + API_KEY + '| qrencode -t UTF8')
     print(c + "\n")
 
-    zeroconf = None
-    info = None
-    if config.zeroconf:
-        zeroconf,info = prepare_zeroconf()
-
     if config.https:
         uvicorn.run("receipt_server:app", host="0.0.0.0", port=ALLOWED_PORT, log_level="info",
                     ssl_certfile=util.get_work_dir() + CERT_LOCATION, ssl_keyfile=util.get_work_dir() + KEY_LOCATION)
     else:
         uvicorn.run("receipt_server:app", host="0.0.0.0", port=ALLOWED_PORT, log_level="info")
-
-    if config.zeroconf:
-        zeroconf.unregister_service(info)
-        zeroconf.close()

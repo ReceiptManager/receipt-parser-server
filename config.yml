@@ -2,10 +2,7 @@
 language: deu
 
 # Enable https
-https: true
-
-# Enable zeroconf
-zeroconf: false
+https: false
 
 results_as_json: false
 
