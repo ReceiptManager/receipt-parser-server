@@ -6,6 +6,7 @@ RUN apt-get install -y qrencode
 
 WORKDIR /app
 COPY . .
+COPY /tessdata/* /usr/share/tesseract-ocr/4.00/tessdata
 
 RUN mkdir -p /app/data/img
 RUN mkdir -p /app/data/tmp
