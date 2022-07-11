@@ -1,4 +1,4 @@
-starlette==0.20.4
+starlette==0.19.1
 Werkzeug==2.1.2
 uvicorn[standard]==0.18.2
 fastapi==0.78.0
